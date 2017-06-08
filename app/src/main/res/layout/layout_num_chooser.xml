@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="wrap_content"
+    android:layout_height="30dp">
+    <Button
+        android:id="@+id/btn_minus"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/btn_minus_bg_selector"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_large"
+        android:text="-"/>
+    <TextView
+        android:id="@+id/tv_num"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="-1px"
+        android:layout_marginRight="-1px"
+        android:background="@drawable/et_bg"
+        android:gravity="center"
+        android:text="1"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/normal"/>
+    <Button
+        android:id="@+id/btn_plus"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/btn_plus_bg_selector"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_large"
+        android:text="+"/>
+</LinearLayout>

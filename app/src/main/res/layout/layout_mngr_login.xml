@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="@drawable/shape_fillet_normal">
+
+    <TextView
+        android:id="@+id/tv_mngr_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:text="@string/mngr_login"
+        android:textColor="@color/normal"
+        android:textSize="@dimen/font_large" />
+    <ImageButton
+        android:id="@+id/ib_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/btn_close_bg_selector"
+        android:background="@android:color/transparent"/>
+
+    <EditText
+        android:id="@+id/et_input_usr_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:layout_margin="20dp"
+        android:layout_below="@id/tv_mngr_login"
+        android:textSize="@dimen/font_normal"
+        android:hint="@string/input_usr_name"/>
+
+    <EditText
+        android:id="@+id/et_input_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="30dp"
+        android:maxLines="1"
+        android:textSize="@dimen/font_normal"
+        android:layout_below="@id/et_input_usr_name"
+        android:hint="@string/input_password"/>
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:background="@drawable/btn_fillet_bg_selector"
+        android:layout_below="@id/et_input_password"
+        android:layout_alignLeft="@id/et_input_password"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal"
+        android:text="@string/cancel"/>
+
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignRight="@id/et_input_password"
+        android:background="@drawable/btn_fillet_bg_selector"
+        android:layout_below="@id/et_input_password"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal"
+        android:text="@string/confirm"/>
+</RelativeLayout>

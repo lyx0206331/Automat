@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="font_tab">11sp</dimen>
+    <dimen name="font_normal">14sp</dimen>
+    <dimen name="font_large">18sp</dimen>
+
+    <dimen name="type_padding">4dp</dimen>
+</resources>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    tools:context="com.adrian.automat.activities.MainActivity">
+
+    <!--波纹特效-->
+    <com.adrian.wavesview.DoubleWavesCalculateView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:wave_back_acolor="#666837f4"
+        app:wave_back_acolor_after="#006837f4"
+        app:wave_back_alpha="102"
+        app:wave_front_acolor="#4d7743fb"
+        app:wave_front_acolor_after="#007743fb"
+        app:wave_front_alpha="77"
+        app:wave_weight="0.45" />
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"/>
+        <TextView
+            android:id="@+id/tv_company"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="right|center_vertical"
+            android:padding="5dp"
+            android:drawableLeft="@drawable/icon"
+            android:textSize="@dimen/font_tab"
+            android:textColor="@drawable/tab_font_selector"
+            android:text="@string/company"/>
+        <View
+            android:layout_width="1px"
+            android:layout_height="30dp"
+            android:background="@color/normal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textSize="@dimen/font_tab"
+            android:textColor="@color/normal"
+            android:text="@string/numble"/>
+        <View
+            android:layout_width="1px"
+            android:layout_height="30dp"
+            android:background="@color/normal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textSize="@dimen/font_tab"
+            android:textColor="@color/normal"
+            android:text="@string/phone"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_above="@id/ll_bottom"
+        android:background="@color/normal" />
+
+    <RadioGroup
+        android:id="@+id/rg_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/ll_bottom"
+        android:background="@color/white"
+        android:layout_marginBottom="1px"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_shopping"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:button="@null"
+            android:drawableTop="@drawable/shopping_selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/shopping"
+            android:textColor="@drawable/tab_font_selector"
+            android:textSize="@dimen/font_tab" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:background="@color/normal" />
+
+        <RadioButton
+            android:id="@+id/rb_demo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:button="@null"
+            android:drawableTop="@drawable/demo_selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/demo"
+            android:textColor="@drawable/tab_font_selector"
+            android:textSize="@dimen/font_tab" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:background="@color/normal" />
+
+        <RadioButton
+            android:id="@+id/rb_qr_code"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:button="@null"
+            android:drawableTop="@drawable/qr_code_selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/qr_code"
+            android:textColor="@drawable/tab_font_selector"
+            android:textSize="@dimen/font_tab" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:background="@color/normal" />
+
+        <RadioButton
+            android:id="@+id/rb_activity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:button="@null"
+            android:drawableTop="@drawable/activity_selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/activity"
+            android:textColor="@drawable/tab_font_selector"
+            android:textSize="@dimen/font_tab" />
+
+    </RadioGroup>
+
+    <View
+        android:id="@+id/indicator_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_alignBottom="@id/rg_tab"
+        android:background="@color/red"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignTop="@id/rg_tab"
+        android:background="@color/normal" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rg_tab"
+        android:orientation="vertical" />
+
+</RelativeLayout>

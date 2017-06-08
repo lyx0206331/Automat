@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal">
+
+    <FrameLayout
+        android:layout_width="80dp"
+        android:layout_height="80dp">
+        <ImageView
+            android:id="@+id/iv_drug"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@mipmap/icon_welcome"/>
+        <TextView
+            android:id="@+id/tv_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/translucent"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_normal"
+            android:text="@string/sell_out"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textColor="@color/normal"
+        android:textSize="@dimen/font_normal"
+        android:text="药品一"/>
+
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/normal"
+        android:textSize="@dimen/font_normal"
+        android:text="￥12.6"/>
+
+</LinearLayout>

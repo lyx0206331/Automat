@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">自动售药机</string>
+
+    <string name="shopping">购物</string>
+    <string name="demo">演示</string>
+    <string name="qr_code">取货码</string>
+    <string name="activity">活动</string>
+
+    <string name="company">山东潍坊至睿传媒有限公司</string>
+    <string name="numble">ZR-vending</string>
+    <string name="phone">027-234234</string>
+
+    <string name="scan_attention">扫码关注</string>
+    <string name="all_drug">全部药品</string>
+    <string name="recommen_ad">推荐位</string>
+
+    <string name="zfb_pay">支付宝支付</string>
+    <string name="weixin_pay">微信支付</string>
+    <string name="union_pay">银联支付</string>
+
+    <string name="del">删除</string>
+    <string name="confirm">确定</string>
+    <string name="input_code">请输入6位取货码</string>
+
+    <string name="back">返回</string>
+    <string name="member">会员购买</string>
+    <string name="store_num">库存:</string>
+    <string name="buy_num">购买数量:</string>
+    <string name="total">合计:</string>
+    <string name="zfb">支付宝</string>
+    <string name="weixin">微信</string>
+    <string name="union">银联</string>
+    <string name="drug_intro">药品简介及注意事项</string>
+
+    <string name="sell_out">已售罄</string>
+    <string name="mngr_login">管理员登录</string>
+    <string name="input_usr_name">请输入用户名</string>
+    <string name="input_password">请输入密码</string>
+    <string name="cancel">取消</string>
+</resources>
