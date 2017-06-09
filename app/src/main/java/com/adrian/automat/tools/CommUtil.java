@@ -6,12 +6,20 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.adrian.automat.application.MyApplication;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Created by ranqing on 2017/6/2.
@@ -160,5 +168,45 @@ public class CommUtil {
 
     public static void showToast(int msgId) {
         Toast.makeText(MyApplication.getInstance(), msgId, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void createDimensXML(String name, int start, int end) {
+//        FileOutputStream fos = null;
+        FileWriter fw = null;
+        BufferedWriter bw = null;
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + name);
+        try {
+            if (file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
+//            fos = new FileOutputStream(file);
+            fw = new FileWriter(file, true);
+            bw = new BufferedWriter(fw);
+            bw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                    "<resources>\n");
+            for (int i = start; i <= end; i++) {
+                bw.write("<dimen name=\"dp" + i + "\">" + i + ".0px</dimen>\n");
+                bw.write("<dimen name=\"dp" + i + "_5\">" + i + ".5px</dimen>\n");
+            }
+            bw.write("</resources>");
+            bw.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+                if (fw != null) {
+                    fw.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 }

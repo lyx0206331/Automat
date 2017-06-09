@@ -85,7 +85,7 @@ public class ActivityFragment extends BaseFragment {
         String target="";
 
 //        if(TextUtils.isEmpty(target=this.getArguments().getString(URL_KEY))){
-            target="http://www.amazon.com";
+        target = "http://www.baidu.com";
 //        }
         return target;
     }

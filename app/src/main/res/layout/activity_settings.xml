@@ -1,9 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.adrian.automat.activities.SettingsActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp70"
+        android:gravity="center"
+        android:text="@string/settings"
+        android:textSize="@dimen/font_large"
+        android:textColor="@color/normal" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp1"
+        android:background="@color/normal" />
+
+    <ImageView
+        android:id="@+id/iv_qr_code"
+        android:layout_width="@dimen/dp160"
+        android:layout_height="@dimen/dp160"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/dp40"
+        android:src="@color/normal" />
+
+    <Button
+        android:id="@+id/btn_modify_pathway"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp60"
+        android:background="@drawable/btn_right_bg_selector"
+        android:text="@string/modify_pathway_count"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal" />
+
+    <Button
+        android:id="@+id/btn_newest_order"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp60"
+        android:background="@drawable/btn_right_bg_selector"
+        android:layout_marginTop="-1px"
+        android:text="@string/newest_order"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal" />
+
+    <Button
+        android:id="@+id/btn_test_pathway"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp60"
+        android:background="@drawable/btn_right_bg_selector"
+        android:layout_marginTop="-1px"
+        android:text="@string/test_pathwar"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal" />
+
+    <Button
+        android:id="@+id/btn_clear_file"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp60"
+        android:layout_marginTop="@dimen/dp40"
+        android:background="@drawable/btn_right_bg_selector"
+        android:text="@string/clear_local_file"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal" />
+
+    <Button
+        android:id="@+id/btn_volumn_ctrl"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp60"
+        android:background="@drawable/btn_right_bg_selector"
+        android:layout_marginTop="-1px"
+        android:text="@string/volumn_control"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal" />
+
+    <Button
+        android:id="@+id/btn_set_ip"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp60"
+        android:layout_marginTop="@dimen/dp40"
+        android:background="@drawable/btn_right_bg_selector"
+        android:text="@string/set_ip"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal" />
+
+    <Button
+        android:id="@+id/btn_temp_state"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp60"
+        android:background="@drawable/btn_right_bg_selector"
+        android:layout_marginTop="-1px"
+        android:text="@string/check_temp_state"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal" />
+
+    <Button
+        android:id="@+id/btn_sensor_report"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp60"
+        android:layout_marginTop="@dimen/dp40"
+        android:background="@drawable/btn_right_bg_selector"
+        android:text="@string/sensor_state_report"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal" />
+
+    <Button
+        android:id="@+id/btn_close"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp60"
+        android:layout_margin="@dimen/dp60"
+        android:background="@drawable/btn_fillet_bg_selector"
+        android:text="@string/close"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal" />
+
+</LinearLayout>

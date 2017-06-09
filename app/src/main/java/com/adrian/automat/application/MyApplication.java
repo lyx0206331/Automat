@@ -33,6 +33,13 @@ public class MyApplication extends Application {
 
         Logger.setDebug(CommUtil.DEBUG);// 开启NoHttp的调试模式, 配置后可看到请求过程、日志和错误信息。
         Logger.setTag("NoHttpSample");// 设置NoHttp打印Log的tag。
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                CommUtil.createDimensXML("dimens.xml", 1, 1920);
+//            }
+//        }).start();
     }
 
     public static MyApplication getInstance() {

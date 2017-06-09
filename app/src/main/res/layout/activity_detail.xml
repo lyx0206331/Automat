@@ -9,7 +9,7 @@
     <com.stx.xhb.xbanner.XBanner
         android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="@dimen/dp500"
         app:pointsPosition="CENTER"
         app:AutoPlayTime="3000"
         app:pointsContainerBackground="#44aaaaaa"
@@ -17,20 +17,20 @@
         app:pointSelect="@drawable/shape_page_indicator_1"/>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="@dimen/dp100"
         android:layout_margin="10dp">
         <Button
             android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp200"
+            android:layout_height="match_parent"
             android:background="@drawable/btn_fillet_bg_selector"
             android:textColor="@drawable/btn_font_selector"
             android:textSize="@dimen/font_normal"
             android:text="@string/back"/>
         <Button
             android:id="@+id/btn_member"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp200"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:background="@drawable/btn_fillet_bg_selector"
             android:textColor="@drawable/btn_font_selector"
@@ -46,8 +46,8 @@
 
         <ImageView
             android:id="@+id/iv_detail_img"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="@dimen/dp400"
+            android:layout_height="@dimen/dp400"
             android:layout_marginRight="10dp"
             android:scaleType="fitXY"
             android:src="@color/normal"/>
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/iv_detail_img"
             android:layout_below="@id/tv_drug_name"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="40dp"
             android:textColor="@color/normal"
             android:textSize="@dimen/font_normal"
             android:text="库存:8"/>
@@ -95,7 +95,7 @@
             android:layout_height="30dp"
             android:layout_toRightOf="@id/iv_detail_img"
             android:layout_below="@id/tv_store_num"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="40dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -116,7 +116,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="60dp"
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@id/iv_detail_img"

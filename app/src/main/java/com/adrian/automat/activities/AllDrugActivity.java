@@ -57,7 +57,9 @@ public class AllDrugActivity extends BaseActivity {
             RadioButton rb = new RadioButton(this);
             rb.setButtonDrawable(null);
             rb.setGravity(Gravity.CENTER);
-            rb.setPadding(14, 12, 14, 12);
+            int left = (int) getResources().getDimension(R.dimen.dp20);
+            int top = (int) getResources().getDimension(R.dimen.dp16);
+            rb.setPadding(left, top, left, top);
             rb.setBackgroundResource(R.drawable.btn_right_bg_selector);
             rb.setText("类别" + i);
             rb.setTextColor(getResources().getColor(R.color.normal));
