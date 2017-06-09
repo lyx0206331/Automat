@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.adrian.automat.R;
+import com.bumptech.glide.Glide;
 
 public class SettingsActivity extends BaseActivity implements View.OnClickListener {
 
@@ -69,20 +70,28 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_modify_pathway:
+                startActivity(ModifyPathwayActivity.class);
                 break;
             case R.id.btn_newest_order:
+                startActivity(NewestOrderActivity.class);
                 break;
             case R.id.btn_test_pathway:
+                startActivity(TestPathwayActivity.class);
                 break;
             case R.id.btn_clear_file:
+                Glide.get(this).clearDiskCache();
+                Glide.get(this).clearMemory();
                 break;
             case R.id.btn_volumn_ctrl:
                 break;
             case R.id.btn_set_ip:
+                startActivity(SetIPActivity.class);
                 break;
             case R.id.btn_temp_state:
+                startActivity(TempStateActivity.class);
                 break;
             case R.id.btn_sensor_report:
+                startActivity(SensorReportActivity.class);
                 break;
             case R.id.btn_close:
                 finish();

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.adrian.automat.activities.ModifyPathwayActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp70"
+        android:gravity="center"
+        android:text="@string/modify_pathway_count"
+        android:textSize="@dimen/font_large"
+        android:textColor="@color/normal" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp1"
+        android:background="@color/normal" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_margin="20dp"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="@dimen/dp200"
+            android:layout_height="@dimen/dp100"
+            android:text="@string/cancel"
+            android:textColor="@drawable/btn_font_selector"
+            android:textSize="@dimen/font_normal"
+            android:background="@drawable/btn_fillet_bg_selector"
+            android:layout_alignParentBottom="true" />
+
+        <Button
+            android:id="@+id/btn_one_key"
+            android:layout_width="@dimen/dp200"
+            android:layout_height="@dimen/dp100"
+            android:text="@string/one_key"
+            android:textColor="@drawable/btn_font_selector"
+            android:textSize="@dimen/font_normal"
+            android:background="@drawable/btn_fillet_bg_selector"
+            android:layout_centerHorizontal="true"
+            android:layout_alignBottom="@id/btn_cancel" />
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="@dimen/dp200"
+            android:layout_height="@dimen/dp100"
+            android:text="@string/confirm"
+            android:textColor="@drawable/btn_font_selector"
+            android:textSize="@dimen/font_normal"
+            android:layout_alignBottom="@id/btn_cancel"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btn_fillet_bg_selector" />
+
+        <ListView
+            android:id="@+id/lvc_pathway"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/btn_cancel"
+            android:layout_marginBottom="20dp" />
+    </RelativeLayout>
+</LinearLayout>

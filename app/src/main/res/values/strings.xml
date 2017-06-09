@@ -52,4 +52,5 @@
     <string name="pathway_num">货道号</string>
     <string name="drug_name">药品名称</string>
     <string name="count">数量</string>
+    <string name="one_key">一键补货</string>
 </resources>
