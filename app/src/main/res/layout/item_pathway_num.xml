@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:id="@+id/tv_pathway_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textColor="@color/normal"
+        android:textSize="@dimen/font_normal"
+        android:text="货道号" />
+
+    <TextView
+        android:id="@+id/tv_drug_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="@color/normal"
+        android:textSize="@dimen/font_normal"
+        android:text="药品名称" />
+
+    <com.adrian.automat.widget.NumChooserView
+        android:id="@+id/ncv"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"></com.adrian.automat.widget.NumChooserView>
+</RelativeLayout>

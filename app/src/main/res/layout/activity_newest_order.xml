@@ -19,4 +19,28 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp1"
         android:background="@color/normal" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp">
+
+        <Button
+            android:id="@+id/btn_close"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp100"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/btn_fillet_bg_selector"
+            android:textSize="@dimen/font_normal"
+            android:textColor="@color/normal"
+            android:text="@string/close" />
+
+        <ListView
+            android:id="@+id/lv_orders"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/btn_close"
+            android:layout_marginBottom="20dp" />
+
+    </RelativeLayout>
 </LinearLayout>

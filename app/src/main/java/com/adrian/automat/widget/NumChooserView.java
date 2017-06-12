@@ -28,6 +28,12 @@ public class NumChooserView extends LinearLayout implements View.OnClickListener
     private int min = 1;
     private int curNum = 1;
 
+    private IValueChangedListener listener;
+
+    public interface IValueChangedListener {
+        void valueChanged(int value);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -98,5 +104,12 @@ public class NumChooserView extends LinearLayout implements View.OnClickListener
     public void setValue(int value) {
         curNum = value;
         mNumTV.setText("" + value);
+        if (listener != null) {
+            listener.valueChanged(value);
+        }
+    }
+
+    public void setListener(IValueChangedListener listener) {
+        this.listener = listener;
     }
 }

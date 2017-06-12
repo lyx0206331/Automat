@@ -12,8 +12,8 @@
         android:layout_height="@dimen/dp70"
         android:gravity="center"
         android:text="@string/modify_pathway_count"
-        android:textSize="@dimen/font_large"
-        android:textColor="@color/normal" />
+        android:textColor="@color/normal"
+        android:textSize="@dimen/font_large" />
 
     <View
         android:layout_width="match_parent"
@@ -22,46 +22,83 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_margin="20dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="20dp">
+
+        <TextView
+            android:id="@+id/tv_pathway"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/pathway_num"
+            android:textColor="@color/normal"
+            android:textSize="@dimen/font_normal" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:text="@string/pathway_num"
+            android:textColor="@color/normal"
+            android:textSize="@dimen/font_normal" />
+
+        <TextView
+            android:id="@+id/tv_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:text="@string/pathway_num"
+            android:textColor="@color/normal"
+            android:textSize="@dimen/font_normal" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp1"
+            android:background="@color/normal"
+            android:layout_below="@id/tv_pathway" />
 
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="@dimen/dp200"
             android:layout_height="@dimen/dp100"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/btn_fillet_bg_selector"
             android:text="@string/cancel"
             android:textColor="@drawable/btn_font_selector"
-            android:textSize="@dimen/font_normal"
-            android:background="@drawable/btn_fillet_bg_selector"
-            android:layout_alignParentBottom="true" />
+            android:textSize="@dimen/font_normal" />
 
         <Button
             android:id="@+id/btn_one_key"
             android:layout_width="@dimen/dp200"
             android:layout_height="@dimen/dp100"
+            android:layout_alignBottom="@id/btn_cancel"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/btn_fillet_bg_selector"
             android:text="@string/one_key"
             android:textColor="@drawable/btn_font_selector"
-            android:textSize="@dimen/font_normal"
-            android:background="@drawable/btn_fillet_bg_selector"
-            android:layout_centerHorizontal="true"
-            android:layout_alignBottom="@id/btn_cancel" />
+            android:textSize="@dimen/font_normal" />
 
         <Button
             android:id="@+id/btn_confirm"
             android:layout_width="@dimen/dp200"
             android:layout_height="@dimen/dp100"
-            android:text="@string/confirm"
-            android:textColor="@drawable/btn_font_selector"
-            android:textSize="@dimen/font_normal"
             android:layout_alignBottom="@id/btn_cancel"
             android:layout_alignParentRight="true"
-            android:background="@drawable/btn_fillet_bg_selector" />
+            android:background="@drawable/btn_fillet_bg_selector"
+            android:text="@string/confirm"
+            android:textColor="@drawable/btn_font_selector"
+            android:textSize="@dimen/font_normal" />
 
         <ListView
             android:id="@+id/lvc_pathway"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/btn_cancel"
+            android:layout_below="@id/tv_pathway"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp" />
     </RelativeLayout>
 </LinearLayout>
