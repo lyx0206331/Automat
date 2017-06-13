@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shape_fillet_normal"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     android:paddingLeft="@dimen/dp1"
     android:paddingRight="@dimen/dp1"
     android:gravity="center_horizontal">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp400">
+        android:layout_height="@dimen/dp260">
         <ImageView
             android:id="@+id/iv_drug"
             android:layout_width="match_parent"

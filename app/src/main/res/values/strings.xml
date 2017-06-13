@@ -53,4 +53,14 @@
     <string name="drug_name">药品名称</string>
     <string name="count">数量</string>
     <string name="one_key">一键补货</string>
+    <string name="out_normal">出货正常</string>
+    <string name="out_except">出货异常</string>
+    <string name="report">上报后台</string>
+    <string name="auto_ip">自动获取</string>
+    <string name="manual_ip">手动设置</string>
+    <string name="ip_address">IP地址:</string>
+    <string name="netmask">子网掩码:</string>
+    <string name="gateway">网关:</string>
+    <string name="dns1">DNS1:</string>
+    <string name="dns2">DNS2:</string>
 </resources>

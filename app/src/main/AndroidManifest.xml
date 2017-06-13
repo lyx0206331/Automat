@@ -47,12 +47,24 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.ModifyPathwayActivity" />
-        <activity android:name=".activities.NewestOrderActivity" />
-        <activity android:name=".activities.TestPathwayActivity" />
-        <activity android:name=".activities.SetIPActivity" />
-        <activity android:name=".activities.TempStateActivity" />
-        <activity android:name=".activities.SensorReportActivity"></activity>
+        <activity
+            android:name=".activities.ModifyPathwayActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.NewestOrderActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.TestPathwayActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SetIPActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.TempStateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SensorReportActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

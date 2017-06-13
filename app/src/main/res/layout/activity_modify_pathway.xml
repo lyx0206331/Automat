@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_margin="10dp"
-            android:text="@string/pathway_num"
+            android:text="@string/drug_name"
             android:textColor="@color/normal"
             android:textSize="@dimen/font_normal" />
 
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_margin="10dp"
-            android:text="@string/pathway_num"
+            android:text="@string/count"
             android:textColor="@color/normal"
             android:textSize="@dimen/font_normal" />
 

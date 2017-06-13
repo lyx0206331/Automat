@@ -32,7 +32,7 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/btn_fillet_bg_selector"
             android:textSize="@dimen/font_normal"
-            android:textColor="@color/normal"
+            android:textColor="@drawable/btn_font_selector"
             android:text="@string/close" />
 
         <ListView
