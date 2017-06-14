@@ -5,7 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 
+import com.adrian.automat.application.MyApplication;
+import com.adrian.automat.tools.CommUtil;
 import com.umeng.analytics.MobclickAgent;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -84,5 +87,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        MyApplication.getInstance().setLastTouchTime(System.currentTimeMillis());
+        return super.dispatchTouchEvent(ev);
     }
 }

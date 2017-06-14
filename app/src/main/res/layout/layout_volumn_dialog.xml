@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dp600"
+    android:layout_height="@dimen/dp500"
+    android:paddingLeft="@dimen/dp80"
+    android:paddingBottom="@dimen/dp80"
+    android:paddingRight="@dimen/dp80"
+    android:paddingTop="40dp"
+    android:background="@drawable/shape_fillet_normal">
+
+    <ImageButton
+        android:id="@+id/ib_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/btn_close_bg_selector"
+        android:background="@android:color/transparent" />
+
+    <TextView
+        android:id="@+id/tv_volumn_ctrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/ib_close"
+        android:layout_margin="5dp"
+        android:text="@string/volumn_control"
+        android:textColor="@color/normal"
+        android:textSize="@dimen/font_large" />
+
+    <SeekBar
+        android:id="@+id/sb_volumn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp60"
+        android:layout_marginBottom="@dimen/dp60"
+        android:layout_below="@id/tv_volumn_ctrl" />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:background="@drawable/btn_fillet_bg_selector"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@id/sb_volumn"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal"
+        android:text="@string/cancel" />
+
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignRight="@id/sb_volumn"
+        android:background="@drawable/btn_fillet_bg_selector"
+        android:layout_alignBottom="@id/btn_cancel"
+        android:textColor="@drawable/btn_font_selector"
+        android:textSize="@dimen/font_normal"
+        android:text="@string/confirm" />
+</RelativeLayout>

@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.adrian.automat.R;
+import com.adrian.automat.widget.VolumnDialog;
 import com.bumptech.glide.Glide;
 
 public class SettingsActivity extends BaseActivity implements View.OnClickListener {
@@ -21,6 +22,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private Button mCheckTempBtn;
     private Button mSensorReportBtn;
     private Button mCloseBtn;
+
+    private VolumnDialog volumnDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +86,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 Glide.get(this).clearMemory();
                 break;
             case R.id.btn_volumn_ctrl:
+                if (volumnDialog == null) {
+                    volumnDialog = new VolumnDialog(this);
+                }
+                volumnDialog.show();
                 break;
             case R.id.btn_set_ip:
                 startActivity(SetIPActivity.class);
