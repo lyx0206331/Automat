@@ -8,7 +8,9 @@ import com.adrian.automat.tools.CommUtil;
 import com.yanzhenjie.nohttp.Logger;
 import com.yanzhenjie.nohttp.NoHttp;
 import com.yanzhenjie.nohttp.URLConnectionNetworkExecutor;
+import com.yanzhenjie.nohttp.cache.DBCacheStore;
 import com.yanzhenjie.nohttp.cache.DiskCacheStore;
+import com.yanzhenjie.nohttp.cookie.DBCookieStore;
 
 /**
  * Created by ranqing on 2017/6/2.
@@ -21,6 +23,8 @@ public class MyApplication extends Application {
     private static long restInterval = 60000;
 
     private long lastTouchTime;
+
+    private String loginToken;
 
     @Override
     public void onCreate() {
@@ -39,6 +43,14 @@ public class MyApplication extends Application {
                 .setCacheStore( //配置缓存，保存到SD卡
                         new DiskCacheStore(this)
                 )
+                // 配置缓存，默认保存数据库DBCacheStore，保存到SD卡使用DiskCacheStore。
+                .setCacheStore(
+                        new DBCacheStore(this).setEnable(true) // 如果不使用缓存，设置setEnable(false)禁用。
+                )
+                // 配置Cookie，默认保存数据库DBCookieStore，开发者可以自己实现。
+                .setCookieStore(
+                        new DBCookieStore(this).setEnable(true) // 如果不维护cookie，设置false禁用。
+                )
         );
 
         Logger.setDebug(CommUtil.DEBUG);// 开启NoHttp的调试模式, 配置后可看到请求过程、日志和错误信息。
@@ -50,6 +62,14 @@ public class MyApplication extends Application {
 //                CommUtil.createDimensXML("dimens.xml", 1, 1920);
 //            }
 //        }).start();
+    }
+
+    public String getLoginToken() {
+        return loginToken;
+    }
+
+    public void setLoginToken(String loginToken) {
+        this.loginToken = loginToken;
     }
 
     public long getLastTouchTime() {

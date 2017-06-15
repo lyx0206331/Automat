@@ -25,14 +25,22 @@ import android.widget.VideoView;
 import com.adrian.automat.R;
 import com.adrian.automat.activities.AllDrugActivity;
 import com.adrian.automat.activities.DetailActivity;
+import com.adrian.automat.pojo.response.GoodsListResp;
 import com.adrian.automat.tools.CommUtil;
+import com.adrian.automat.tools.HttpListener;
+import com.adrian.automat.tools.NetUtil;
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
+import com.yanzhenjie.nohttp.rest.Response;
+
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ShoppingFragment extends BaseFragment implements View.OnClickListener {
+public class ShoppingFragment extends BaseFragment implements View.OnClickListener, HttpListener {
+
+    private static final String TAG = "ShoppingFragment";
 
     private VideoView videoView;
     private ProgressBar mVideoLoading;
@@ -53,12 +61,15 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
     private TextView mRecPrice1TV;
     private TextView mRecPrice2TV;
 
+    private NetUtil util;
+
     private List<String> localImages;
 
     private String videoUrl = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
 
     public ShoppingFragment() {
         // Required empty public constructor
+        util = new NetUtil(getActivity(), this);
     }
 
 
@@ -67,6 +78,9 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shopping, container, false);
         initView(view);
+
+        videoView.setVideoPath(videoUrl);
+        videoView.start();
         return view;
     }
 
@@ -138,8 +152,7 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
-        videoView.setVideoPath(videoUrl);
-        videoView.start();
+        util.getGoodsList("1-1-1", 0, 0, null);
     }
 
     @Override
@@ -190,4 +203,15 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
         }
     }
 
+    @Override
+    public void onSucceed(int what, Response response) {
+        String respStr = response.get().toString();
+        GoodsListResp resp = JSON.parseObject(respStr, GoodsListResp.class);
+        CommUtil.logE(TAG, resp.toString());
+    }
+
+    @Override
+    public void onFailed(int what, Response response) {
+
+    }
 }

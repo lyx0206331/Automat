@@ -15,6 +15,11 @@ android {
         multiDexEnabled true
         // 默认是umeng的渠道
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "default_channel"]
+
+        ndk {
+            //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "arm64-v8a", "x86_64"
+        }
     }
     buildTypes {
         release {
@@ -111,6 +116,12 @@ dependencies {
     //    compile 'com.yanzhenjie.nohttp:okhttp:1.1.2'    //使用OkHttp作为网络层
     compile project(':wavesview')
 
+    //高德地图
+    //2D地图
+    //3D地图
+    //定位
+    //搜索
+//    compile 'com.amap.api:navi-3dmap:latest.integration'    //导航
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:support-v4:25.3.1'
@@ -120,8 +131,12 @@ dependencies {
     compile 'com.just.agentweb:agentweb:1.1.2'
     compile 'com.yanzhenjie.nohttp:nohttp:1.1.2'
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'com.alibaba:fastjson:1.1.58.android'
+    compile 'com.amap.api:map2d:latest.integration'
+    compile 'com.amap.api:3dmap:latest.integration'
+    compile 'com.amap.api:location:latest.integration'
+    compile 'com.amap.api:search:latest.integration'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC0'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.4.0'
-    compile 'com.alibaba:fastjson:1.1.58.android'
 }
