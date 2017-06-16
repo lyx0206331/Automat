@@ -59,7 +59,7 @@ public class NetUtil {
      * @param name
      */
     public void getGoodsList(String ordinal, int goodsId, int goodsTypeId, String name) {
-        String url = Constants.GOODS_LIST_URL + "?token=" + MyApplication.getInstance().getLoginToken() + "&";
+        String url = Constants.GOODS_LIST_URL + "?token=" + MyApplication.getInstance().getLoginToken();
         CommUtil.logE("GOODSLIST", url);
         Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
         req.add("ordinal", ordinal);

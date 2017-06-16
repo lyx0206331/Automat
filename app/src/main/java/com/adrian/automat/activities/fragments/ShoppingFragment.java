@@ -3,6 +3,7 @@ package com.adrian.automat.activities.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -25,29 +27,43 @@ import android.widget.VideoView;
 import com.adrian.automat.R;
 import com.adrian.automat.activities.AllDrugActivity;
 import com.adrian.automat.activities.DetailActivity;
+import com.adrian.automat.activities.MapActivity;
 import com.adrian.automat.pojo.response.GoodsListResp;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.HttpListener;
 import com.adrian.automat.tools.NetUtil;
 import com.alibaba.fastjson.JSON;
+import com.amap.api.fence.GeoFence;
+import com.amap.api.fence.GeoFenceListener;
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.LocationSource;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.MyLocationStyle;
 import com.bumptech.glide.Glide;
+import com.stx.xhb.xbanner.XBanner;
 import com.yanzhenjie.nohttp.rest.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ShoppingFragment extends BaseFragment implements View.OnClickListener, HttpListener {
+public class ShoppingFragment extends BaseFragment implements View.OnClickListener, HttpListener,
+        LocationSource,
+        AMapLocationListener {
 
     private static final String TAG = "ShoppingFragment";
 
-    private VideoView videoView;
-    private ProgressBar mVideoLoading;
-
+    private XBanner banner;
     private Button mScanAttentionBtn;
     private Button mAllDrugBtn;
-    private ImageView mRecIV;
     private LinearLayout mRec0LL;
     private LinearLayout mRec1LL;
     private LinearLayout mRec2LL;
@@ -60,6 +76,14 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
     private TextView mRecPrice0TV;
     private TextView mRecPrice1TV;
     private TextView mRecPrice2TV;
+    private ImageButton mFullScreenIB;
+
+    private AMapLocationClient mlocationClient;
+    private LocationSource.OnLocationChangedListener mListener;
+    private AMapLocationClientOption mLocationOption;
+
+    private MapView mMapView;
+    private AMap mAMap;
 
     private NetUtil util;
 
@@ -79,9 +103,38 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
         View view = inflater.inflate(R.layout.fragment_shopping, container, false);
         initView(view);
 
-        videoView.setVideoPath(videoUrl);
-        videoView.start();
+        mMapView.onCreate(savedInstanceState);
+        if (mAMap == null) {
+            mAMap = mMapView.getMap();
+            mAMap.getUiSettings().setRotateGesturesEnabled(false);
+            mAMap.moveCamera(CameraUpdateFactory.zoomBy(6));
+            setUpMap();
+        }
         return view;
+    }
+
+    /**
+     * 设置一些amap的属性
+     */
+    private void setUpMap() {
+        mAMap.setLocationSource(this);// 设置定位监听
+        mAMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
+        // 自定义系统定位蓝点
+        MyLocationStyle myLocationStyle = new MyLocationStyle();
+        // 自定义定位蓝点图标
+        myLocationStyle.myLocationIcon(
+                BitmapDescriptorFactory.fromResource(R.drawable.gps_point));
+        // 自定义精度范围的圆形边框颜色
+        myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));
+        // 自定义精度范围的圆形边框宽度
+        myLocationStyle.strokeWidth(0);
+        // 设置圆形的填充颜色
+        myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));
+        // 将自定义的 myLocationStyle 对象添加到地图上
+        mAMap.setMyLocationStyle(myLocationStyle);
+        mAMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
+        // 设置定位的类型为定位模式 ，可以由定位、跟随或地图根据面向方向旋转几种
+        mAMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
     }
 
     @Override
@@ -90,11 +143,10 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void initView(View view) {
-        videoView = (VideoView) view.findViewById(R.id.videoView);
-        mVideoLoading = (ProgressBar) view.findViewById(R.id.video_loading);
+        banner = (XBanner) view.findViewById(R.id.banner);
         mScanAttentionBtn = (Button) view.findViewById(R.id.btn_scan_attention);
         mAllDrugBtn = (Button) view.findViewById(R.id.btn_all_drug);
-        mRecIV = (ImageView) view.findViewById(R.id.iv_recommend);
+        mMapView = (MapView) view.findViewById(R.id.map);
         mRec0LL = (LinearLayout) view.findViewById(R.id.ll_rec_0);
         mRec1LL = (LinearLayout) view.findViewById(R.id.ll_rec_1);
         mRec2LL = (LinearLayout) view.findViewById(R.id.ll_rec_2);
@@ -107,69 +159,69 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
         mRecPrice0TV = (TextView) view.findViewById(R.id.tv_rec_price_0);
         mRecPrice1TV = (TextView) view.findViewById(R.id.tv_rec_price_1);
         mRecPrice2TV = (TextView) view.findViewById(R.id.tv_rec_price_2);
+        mFullScreenIB = (ImageButton) view.findViewById(R.id.ib_fullscreen);
 
-        Glide.with(getActivity()).load("http://img2.ooopic.com/12/83/05/32bOOOPICab_202.jpg").into(mRecIV);
+        localImages = new ArrayList<>();
+        localImages.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496407271033&di=fa1deaabe2b4792240b4dde3fbcaacda&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2F00%2F04%2F13%2F75%2F8db5a6d5cc09a89f6dc6c9d8bf2e3770.jpg");
+        localImages.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496408046885&di=46e1d41491d7df0cb2efea1e4a7ddf8c&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2F00%2F04%2F13%2F75%2F266e84bc0e5a43b8e39d397f648162c4.jpg");
+        localImages.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496408140378&di=75ea602661479baa157d201362ee6c66&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2Fqk%2Fback_origin_pic%2F00%2F01%2F49%2F15068f16288b124067042212251d0d63.jpg");
+        localImages.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496408237185&di=192b74ab6f1ff401448e3f46861c9119&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2F00%2F04%2F13%2F75%2F5412693453409bc2a8db36a9f70fc3b6.jpg");
+        banner.setData(localImages, null);
+        banner.setmAdapter(new XBanner.XBannerAdapter() {
+            @Override
+            public void loadBanner(XBanner banner, View view, int position) {
+                Glide.with(getActivity()).load(localImages.get(position)).into((ImageView) view);
+            }
+        });
+        banner.setOnItemClickListener(new XBanner.OnItemClickListener() {
+            @Override
+            public void onItemClick(XBanner banner, int position) {
+                CommUtil.showToast("点击了第" + position + "张图片");
+            }
+        });
 
         Glide.with(getActivity()).load("http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg").into(mRec0IV);
         Glide.with(getActivity()).load("http://img0.imgtn.bdimg.com/it/u=2890974895,2151831020&fm=214&gp=0.jpg").into(mRec1IV);
         Glide.with(getActivity()).load("http://img008.hc360.cn/g3/M08/FE/68/wKhQvlJWpKyEe6KUAAAAANIYEaE532.jpg..180x180.jpg").into(mRec2IV);
         mScanAttentionBtn.setOnClickListener(this);
         mAllDrugBtn.setOnClickListener(this);
-        mRecIV.setOnClickListener(this);
+        mMapView.setOnClickListener(this);
         mRec0LL.setOnClickListener(this);
         mRec1LL.setOnClickListener(this);
         mRec2LL.setOnClickListener(this);
+        mFullScreenIB.setOnClickListener(this);
 
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                Log.e("TAG", "play prepared!");
-                mVideoLoading.setVisibility(View.GONE);
-            }
-        });
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                Log.e("TAG", "play completion!");
-                videoView.setVideoPath(videoUrl);
-                videoView.start();
-            }
-        });
-        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-            @Override
-            public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                Log.e("TAG", "what:" + what + " extra:" + extra + " duration:" + mp.getDuration() + " cur:" + mp.getCurrentPosition());
-                if (what == 3) {
-                    mVideoLoading.setVisibility(View.GONE);
-                } else {
-                    mVideoLoading.setVisibility(View.VISIBLE);
-                }
-                return false;
-            }
-        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        util.getGoodsList("1-1-1", 0, 0, null);
+        banner.startAutoPlay();
+        util.getGoodsList(null, 0, 0, null);
+        mMapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        videoView.pause();
+        banner.stopAutoPlay();
+        mMapView.onPause();
+        deactivate();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        videoView.stopPlayback();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mMapView.onDestroy();
+
+        if (null != mlocationClient) {
+            mlocationClient.onDestroy();
+        }
     }
 
     @Override
@@ -182,8 +234,9 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
 //                CommUtil.showToast("所有药品");
                 startActivity(AllDrugActivity.class);
                 break;
-            case R.id.iv_recommend:
-                CommUtil.showToast("推荐位");
+            case R.id.ib_fullscreen:
+//                CommUtil.showToast("推荐位");
+                startActivity(MapActivity.class);
                 break;
             case R.id.ll_rec_0:
 //                CommUtil.showToast("推荐0");
@@ -213,5 +266,50 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onFailed(int what, Response response) {
 
+    }
+
+    @Override
+    public void onLocationChanged(AMapLocation amapLocation) {
+        if (mListener != null && amapLocation != null) {
+            if (amapLocation != null && amapLocation.getErrorCode() == 0) {
+//                tvResult.setVisibility(View.GONE);
+                mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
+            } else {
+                String errText = "定位失败," + amapLocation.getErrorCode() + ": "
+                        + amapLocation.getErrorInfo();
+                Log.e("AmapErr", errText);
+                CommUtil.showToast(errText);
+//                tvResult.setVisibility(View.VISIBLE);
+//                tvResult.setText(errText);
+            }
+        }
+    }
+
+    @Override
+    public void activate(OnLocationChangedListener onLocationChangedListener) {
+        mListener = onLocationChangedListener;
+        if (mlocationClient == null) {
+            mlocationClient = new AMapLocationClient(getContext());
+            mLocationOption = new AMapLocationClientOption();
+            // 设置定位监听
+            mlocationClient.setLocationListener(this);
+            // 设置为高精度定位模式
+            mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+            // 只是为了获取当前位置，所以设置为单次定位
+            mLocationOption.setOnceLocation(true);
+            // 设置定位参数
+            mlocationClient.setLocationOption(mLocationOption);
+            mlocationClient.startLocation();
+        }
+    }
+
+    @Override
+    public void deactivate() {
+        mListener = null;
+        if (mlocationClient != null) {
+            mlocationClient.stopLocation();
+            mlocationClient.onDestroy();
+        }
+        mlocationClient = null;
     }
 }
