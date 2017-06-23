@@ -28,6 +28,7 @@ import com.adrian.automat.R;
 import com.adrian.automat.activities.AllDrugActivity;
 import com.adrian.automat.activities.DetailActivity;
 import com.adrian.automat.activities.MapActivity;
+import com.adrian.automat.pojo.response.GoodsBean;
 import com.adrian.automat.pojo.response.GoodsListResp;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.HttpListener;
@@ -50,6 +51,8 @@ import com.stx.xhb.xbanner.XBanner;
 import com.yanzhenjie.nohttp.rest.Response;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -180,9 +183,6 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
             }
         });
 
-        Glide.with(getActivity()).load("http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg").into(mRec0IV);
-        Glide.with(getActivity()).load("http://img0.imgtn.bdimg.com/it/u=2890974895,2151831020&fm=214&gp=0.jpg").into(mRec1IV);
-        Glide.with(getActivity()).load("http://img008.hc360.cn/g3/M08/FE/68/wKhQvlJWpKyEe6KUAAAAANIYEaE532.jpg..180x180.jpg").into(mRec2IV);
         mScanAttentionBtn.setOnClickListener(this);
         mAllDrugBtn.setOnClickListener(this);
         mMapView.setOnClickListener(this);
@@ -197,7 +197,7 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
     public void onResume() {
         super.onResume();
         banner.startAutoPlay();
-        util.getGoodsList(null, 0, 0, null);
+        util.getGoodsList(null, -1, -1, null);
         mMapView.onResume();
     }
 
@@ -260,12 +260,70 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
     public void onSucceed(int what, Response response) {
         String respStr = response.get().toString();
         GoodsListResp resp = JSON.parseObject(respStr, GoodsListResp.class);
-        CommUtil.logE(TAG, resp.toString());
+//        CommUtil.logE(TAG, resp.toString());
+        List<GoodsBean> data = sortGoods(resp.getData());
+
+        int count = data.size();
+        switch (count) {
+            case 0:
+                mRec0LL.setVisibility(View.INVISIBLE);
+                mRec1LL.setVisibility(View.INVISIBLE);
+                mRec2LL.setVisibility(View.INVISIBLE);
+                break;
+            case 1:
+                mRec0LL.setVisibility(View.VISIBLE);
+                mRec1LL.setVisibility(View.INVISIBLE);
+                mRec2LL.setVisibility(View.INVISIBLE);
+                mRecName0TV.setText(data.get(0).getName());
+                mRecPrice0TV.setText("￥" + data.get(0).getPrice());
+                Glide.with(getActivity()).load("http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg").into(mRec0IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
+                break;
+            case 2:
+                mRec0LL.setVisibility(View.VISIBLE);
+                mRec1LL.setVisibility(View.VISIBLE);
+                mRec2LL.setVisibility(View.INVISIBLE);
+                mRecName0TV.setText(data.get(0).getName());
+                mRecPrice0TV.setText("￥" + data.get(0).getPrice());
+                mRecName1TV.setText(data.get(1).getName());
+                mRecPrice1TV.setText("￥" + data.get(1).getPrice());
+                Glide.with(getActivity()).load("http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg").into(mRec0IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
+                Glide.with(getActivity()).load("http://img0.imgtn.bdimg.com/it/u=2890974895,2151831020&fm=214&gp=0.jpg").into(mRec1IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
+                break;
+            default:
+                mRec0LL.setVisibility(View.VISIBLE);
+                mRec1LL.setVisibility(View.VISIBLE);
+                mRec2LL.setVisibility(View.VISIBLE);
+                mRecName0TV.setText(data.get(0).getName());
+                mRecPrice0TV.setText("￥" + data.get(0).getPrice());
+                mRecName1TV.setText(data.get(1).getName());
+                mRecPrice1TV.setText("￥" + data.get(1).getPrice());
+                mRecName2TV.setText(data.get(2).getName());
+                mRecPrice2TV.setText("￥" + data.get(2).getPrice());
+                Glide.with(getActivity()).load("http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg").into(mRec0IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
+                Glide.with(getActivity()).load("http://img0.imgtn.bdimg.com/it/u=2890974895,2151831020&fm=214&gp=0.jpg").into(mRec1IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
+                Glide.with(getActivity()).load("http://img008.hc360.cn/g3/M08/FE/68/wKhQvlJWpKyEe6KUAAAAANIYEaE532.jpg..180x180.jpg").into(mRec2IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
+                break;
+        }
     }
 
     @Override
     public void onFailed(int what, Response response) {
+        CommUtil.showToast("数据请求失败！");
+    }
 
+    private List<GoodsBean> sortGoods(List<GoodsBean> list) {
+        for (GoodsBean bean :
+                list) {
+            bean.setWeight(((int) (Math.random() * 10)));
+        }
+//        for (GoodsBean bean : list) {
+//            CommUtil.logE(TAG, "befor weight:" + bean.getWeight());
+//        }
+        Collections.sort(list);
+        for (GoodsBean bean : list) {
+            CommUtil.logE(TAG, "after sort:" + bean.toString());
+        }
+        return list;
     }
 
     @Override

@@ -1,10 +1,15 @@
 package com.adrian.automat.pojo.response;
 
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import java.util.Comparator;
+
 /**
  * Created by adrian on 17-6-15.
  */
 
-public class GoodsBean {
+public class GoodsBean implements Comparable {
     /**
      * ordinal : 1-1-2
      * gridId : 2
@@ -98,7 +103,7 @@ public class GoodsBean {
     }
 
     public String getName() {
-        return name;
+        return TextUtils.isEmpty(name) ? "无名商品,找后台" : name;
     }
 
     public void setName(String name) {
@@ -189,5 +194,11 @@ public class GoodsBean {
                 ", img='" + img + '\'' +
                 ", weight=" + weight +
                 '}';
+    }
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        Integer w = ((GoodsBean) o).getWeight();
+        return (w).compareTo((Integer) weight);
     }
 }

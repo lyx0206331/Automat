@@ -2,14 +2,18 @@ package com.adrian.automat.tools;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.adrian.automat.application.MyApplication;
+import com.adrian.automat.pojo.PathwayDataBean;
 import com.adrian.automat.pojo.request.LoginReq;
 import com.alibaba.fastjson.JSONObject;
 import com.yanzhenjie.nohttp.NoHttp;
 import com.yanzhenjie.nohttp.RequestMethod;
 import com.yanzhenjie.nohttp.rest.Request;
 import com.yanzhenjie.nohttp.rest.RequestQueue;
+
+import java.util.List;
 
 /**
  * Created by adrian on 17-6-15.
@@ -47,7 +51,7 @@ public class NetUtil {
         Request<JSONObject> req = new FastJsonRequest(Constants.LOGIN_URL, RequestMethod.POST);
         req.add("userName", userName);
         req.add("password", pwd);
-        request(0, req, jsonHttpListener, false, true);
+        request(Constants.LOGIN_TAG, req, jsonHttpListener, false, true);
     }
 
     /**
@@ -62,15 +66,75 @@ public class NetUtil {
         String url = Constants.GOODS_LIST_URL + "?token=" + MyApplication.getInstance().getLoginToken();
         CommUtil.logE("GOODSLIST", url);
         Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
-        req.add("ordinal", ordinal);
-        req.add("goodsId", goodsId);
-        req.add("goodsTypeId", goodsTypeId);
-        req.add("name", name);
-        request(1, req, jsonHttpListener, false, true);
+        if (!TextUtils.isEmpty(ordinal)) {
+            req.add("ordinal", ordinal);
+        }
+        if (goodsId != -1) {
+            req.add("goodsId", goodsId);
+        }
+        if (goodsTypeId != -1) {
+            req.add("goodsTypeId", goodsTypeId);
+        }
+        if (!TextUtils.isEmpty(name)) {
+            req.add("name", name);
+        }
+        request(Constants.GOODS_LIST_TAG, req, jsonHttpListener, false, true);
     }
 
     /**
-     * 发起请求。
+     * 获取商品类型
+     *
+     * @param pageNum
+     * @param pageSize
+     */
+    public void getGoodsTypeList(int pageNum, int pageSize) {
+        String url = Constants.GOODS_TYPE_LIST_URL + "?token=" + MyApplication.getInstance().getLoginToken();
+        CommUtil.logE("GOODSTYPELIST", url);
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
+        req.add("pageNum", pageNum);
+        req.add("pageSize", pageSize);
+        request(Constants.GOODS_TYPE_LIST_TAG, req, jsonHttpListener, false, true);
+    }
+
+    /**
+     * 获取售货机详细信息
+     */
+    public void getMachineInfo() {
+        String url = Constants.MACHINE_INFO_URL + "?token=" + MyApplication.getInstance().getLoginToken();
+        CommUtil.logE("MACHINEINFO", url);
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
+        request(Constants.MACHINE_INFO_TAG, req, jsonHttpListener, false, true);
+    }
+
+    /**
+     * 上报售货机信息
+     *
+     * @param latitude
+     * @param longitude
+     */
+    public void reportMachineInfo(double latitude, double longitude) {
+        String url = Constants.MACHINE_REPORT_URL + "?token=" + MyApplication.getInstance().getLoginToken();
+        CommUtil.logE("MACHINEINFO", url);
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.PUT);
+        req.add("latitude", latitude);
+        req.add("longitude", longitude);
+        request(Constants.MACHINE_REPORT_TAG, req, jsonHttpListener, false, true);
+    }
+
+    /**
+     * 批量修改轨道当前商品数据及最大商品数量
+     *
+     * @param datas
+     */
+    public void modifyPathwayData(List<PathwayDataBean> datas) {
+        String url = Constants.MODIFY_PATHWAY_DATA_URL + "?token=" + MyApplication.getInstance().getLoginToken();
+        CommUtil.logE("MACHINEINFO", url);
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.PUT);
+        request(Constants.MODIFY_PATHWAY_DATA_TAG, req, jsonHttpListener, false, true);
+    }
+
+    /**
+     * 发起请求
      *
      * @param what      what.
      * @param request   请求对象。

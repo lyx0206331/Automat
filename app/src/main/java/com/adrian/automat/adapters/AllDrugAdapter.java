@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.adrian.automat.R;
 import com.adrian.automat.pojo.DrugSimpleInfo;
+import com.adrian.automat.pojo.response.GoodsBean;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -22,18 +23,18 @@ import java.util.List;
 public class AllDrugAdapter extends BaseAdapter {
 
     private Context context;
-    private List<DrugSimpleInfo> data;
+    private List<GoodsBean> data;
 
     public AllDrugAdapter(Context context) {
         this.context = context;
     }
 
-    public AllDrugAdapter(Context context, List<DrugSimpleInfo> data) {
+    public AllDrugAdapter(Context context, List<GoodsBean> data) {
         this.context = context;
         this.data = data;
     }
 
-    public void addItem(DrugSimpleInfo item) {
+    public void addItem(GoodsBean item) {
         if (data == null) {
             data = new ArrayList<>();
         }
@@ -41,12 +42,12 @@ public class AllDrugAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void setData(List<DrugSimpleInfo> data) {
+    public void setData(List<GoodsBean> data) {
         this.data = data;
         notifyDataSetChanged();
     }
 
-    public void addData(List<DrugSimpleInfo> items) {
+    public void addData(List<GoodsBean> items) {
         if (data == null) {
             data = new ArrayList<>();
         }
@@ -83,11 +84,11 @@ public class AllDrugAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        DrugSimpleInfo item = data.get(position);
-        holder.mNameTV.setText(item.getDrugName());
+        GoodsBean item = data.get(position);
+        holder.mNameTV.setText(item.getName());
         holder.mPriceTV.setText("￥" + item.getPrice());
-        Glide.with(context).load(item.getThumbUrl()).into(holder.mThumbIV);
-        if (item.getStore() == 0) {
+        Glide.with(context).load("http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg").into(holder.mThumbIV);
+        if (item.getNowNum() == 0) {
             holder.mSellOutTV.setVisibility(View.VISIBLE);
         } else {
             holder.mSellOutTV.setVisibility(View.GONE);

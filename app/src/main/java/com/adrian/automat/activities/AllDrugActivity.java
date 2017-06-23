@@ -16,15 +16,25 @@ import android.widget.RadioGroup;
 import com.adrian.automat.R;
 import com.adrian.automat.adapters.AllDrugAdapter;
 import com.adrian.automat.pojo.DrugSimpleInfo;
+import com.adrian.automat.pojo.response.GoodsBean;
+import com.adrian.automat.pojo.response.GoodsListResp;
+import com.adrian.automat.pojo.response.GoodsTypesResp;
 import com.adrian.automat.tools.CommUtil;
+import com.adrian.automat.tools.Constants;
+import com.adrian.automat.tools.HttpListener;
+import com.adrian.automat.tools.NetUtil;
 import com.adrian.automat.widget.FlowRadioGroup;
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.stx.xhb.xbanner.XBanner;
+import com.yanzhenjie.nohttp.rest.Response;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AllDrugActivity extends BaseActivity {
+public class AllDrugActivity extends BaseActivity implements HttpListener {
+
+    private static final String TAG = "AllDrugActivity";
 
     private XBanner mBannerNet;
     private GridView mDrugsGV;
@@ -34,6 +44,8 @@ public class AllDrugActivity extends BaseActivity {
 
     private List<String> localImages;
 
+    private NetUtil util;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +53,10 @@ public class AllDrugActivity extends BaseActivity {
 
     @Override
     protected void initVariables() {
-
+        util = new NetUtil(this, this);
+        if (!CommUtil.getWifiStatus(this)) {
+            CommUtil.showToast(R.string.connect_error);
+        }
     }
 
     @Override
@@ -73,11 +88,11 @@ public class AllDrugActivity extends BaseActivity {
         mAdapter = new AllDrugAdapter(this);
         mDrugsGV.setAdapter(mAdapter);
 
-        List drugs = new ArrayList();
-        for (int i = 0; i< 20; i++) {
-            drugs.add(new DrugSimpleInfo(i + "", "http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg", "药品名称" + i, 0, 12.6f, i%3, 4));
-        }
-        mAdapter.setData(drugs);
+//        List drugs = new ArrayList();
+//        for (int i = 0; i< 20; i++) {
+//            drugs.add(new DrugSimpleInfo(i + "", "http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg", "药品名称" + i, 0, 12.6f, i%3, 4));
+//        }
+//        mAdapter.setData(drugs);
 
         localImages = new ArrayList<>();
         localImages.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496407271033&di=fa1deaabe2b4792240b4dde3fbcaacda&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2F00%2F04%2F13%2F75%2F8db5a6d5cc09a89f6dc6c9d8bf2e3770.jpg");
@@ -108,8 +123,8 @@ public class AllDrugActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 AllDrugAdapter adapter = (AllDrugAdapter) parent.getAdapter();
-                DrugSimpleInfo item = (DrugSimpleInfo) adapter.getItem(position);
-                if (item.getStore() == 0) {
+                GoodsBean item = (GoodsBean) adapter.getItem(position);
+                if (item.getNowNum() == 0) {
                     CommUtil.showToast("此药品已售罄!");
                 } else {
                     startActivity(DetailActivity.class);
@@ -120,7 +135,8 @@ public class AllDrugActivity extends BaseActivity {
 
     @Override
     protected void loadData() {
-
+        util.getGoodsTypeList(1, 1000);
+        util.getGoodsList(null, -1, -1, null);
     }
 
     @Override
@@ -143,5 +159,31 @@ public class AllDrugActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         mBannerNet.stopAutoPlay();
+    }
+
+    @Override
+    protected void onDestroy() {
+        util.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onSucceed(int what, Response response) {
+        String respStr = response.get().toString();
+        switch (what) {
+            case Constants.GOODS_TYPE_LIST_TAG:
+                GoodsTypesResp resp = JSON.parseObject(respStr, GoodsTypesResp.class);
+                CommUtil.logE(TAG, resp.toString());
+                break;
+            case Constants.GOODS_LIST_TAG:
+                GoodsListResp goodsListResp = JSON.parseObject(respStr, GoodsListResp.class);
+                mAdapter.addData(goodsListResp.getData());
+                break;
+        }
+    }
+
+    @Override
+    public void onFailed(int what, Response response) {
+
     }
 }

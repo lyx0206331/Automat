@@ -176,7 +176,7 @@ public class DoubleWavesCalculateView extends View {
 //        canvas.drawBitmap(bitmap, 0.0f, 0.0f, new Paint());     //把之前那张图画到本view上
 //        bitmap.recycle();
         long timeEnd = System.currentTimeMillis();
-        Log.i("KJ", "onDraw()时间间隔:-->>" + (timeEnd - timeStart));
+//        Log.i("KJ", "onDraw()时间间隔:-->>" + (timeEnd - timeStart));
     }
 
     /**
