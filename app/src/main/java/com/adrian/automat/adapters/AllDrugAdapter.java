@@ -1,6 +1,7 @@
 package com.adrian.automat.adapters;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import com.adrian.automat.R;
 import com.adrian.automat.pojo.DrugSimpleInfo;
 import com.adrian.automat.pojo.response.GoodsBean;
+import com.adrian.automat.tools.CommUtil;
+import com.adrian.automat.tools.Constants;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -85,9 +88,16 @@ public class AllDrugAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         GoodsBean item = data.get(position);
+//        CommUtil.logE("ITEM", "goods = " + item.toString());
         holder.mNameTV.setText(item.getName());
         holder.mPriceTV.setText("￥" + item.getPrice());
-        Glide.with(context).load("http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg").into(holder.mThumbIV);
+        String imgUrl = Constants.IMG_DOMAIN + "/" + item.getImg();
+//        CommUtil.logE("IMG_URL", "pos:" + position + " url:" + imgUrl);
+        if (TextUtils.isEmpty(item.getImg())) {
+            holder.mThumbIV.setImageResource(R.drawable.ic_img_failed);
+        } else {
+            Glide.with(context).load(imgUrl).into(holder.mThumbIV);
+        }
         if (item.getNowNum() == 0) {
             holder.mSellOutTV.setVisibility(View.VISIBLE);
         } else {

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.os.Handler;
 import android.os.Message;
 
+import com.adrian.automat.pojo.response.GoodsBean;
 import com.adrian.automat.tools.CommUtil;
 import com.yanzhenjie.nohttp.Logger;
 import com.yanzhenjie.nohttp.NoHttp;
@@ -11,6 +12,8 @@ import com.yanzhenjie.nohttp.URLConnectionNetworkExecutor;
 import com.yanzhenjie.nohttp.cache.DBCacheStore;
 import com.yanzhenjie.nohttp.cache.DiskCacheStore;
 import com.yanzhenjie.nohttp.cookie.DBCookieStore;
+
+import java.util.List;
 
 /**
  * Created by ranqing on 2017/6/2.
@@ -25,6 +28,8 @@ public class MyApplication extends Application {
     private long lastTouchTime;
 
     private String loginToken;
+
+    private List<GoodsBean> allGoodsList;
 
     @Override
     public void onCreate() {
@@ -62,6 +67,14 @@ public class MyApplication extends Application {
 //                CommUtil.createDimensXML("dimens.xml", 1, 1920);
 //            }
 //        }).start();
+    }
+
+    public List<GoodsBean> getAllGoodsList() {
+        return allGoodsList;
+    }
+
+    public void setAllGoodsList(List<GoodsBean> allGoodsList) {
+        this.allGoodsList = allGoodsList;
     }
 
     public String getLoginToken() {

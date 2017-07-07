@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,10 +15,16 @@ import com.adrian.automat.activities.fragments.ActivityFragment;
 import com.adrian.automat.activities.fragments.DemoFragment;
 import com.adrian.automat.activities.fragments.QrCodeFragment;
 import com.adrian.automat.activities.fragments.ShoppingFragment;
+import com.adrian.automat.pojo.response.GoodsListResp;
 import com.adrian.automat.tools.CommUtil;
+import com.adrian.automat.tools.Constants;
+import com.adrian.automat.tools.HttpListener;
+import com.adrian.automat.tools.NetUtil;
 import com.adrian.automat.widget.MngrLoginDialog;
+import com.alibaba.fastjson.JSON;
+import com.yanzhenjie.nohttp.rest.Response;
 
-public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnCheckedChangeListener, HttpListener {
 
     private static final int FRAGMENT_COUNT = 4;
 
@@ -27,9 +34,12 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
     private View mIndicatorView;
     private TextView mCompanyTV;
     private MngrLoginDialog mMngrDialog;
+    private ImageButton mRefreshIB;
 
     private int curPos = 0;
     private int stepW;
+
+    private NetUtil util;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +48,7 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
 
     @Override
     protected void initVariables() {
-
+        util = new NetUtil(this, this);
     }
 
     @Override
@@ -49,6 +59,7 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
         fragments[3] = new ActivityFragment();
         switchFragment(fragments[0], R.id.fragment_container);
         mIndicatorView = findViewById(R.id.indicator_bottom);
+        mRefreshIB = (ImageButton) findViewById(R.id.ib_refresh);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mIndicatorView.getLayoutParams();
         stepW = CommUtil.getWindowWidth(this) / FRAGMENT_COUNT;
         lp.width = stepW;
@@ -56,6 +67,13 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
         mTabRG.check(R.id.rb_shopping);
 
         mTabRG.setOnCheckedChangeListener(this);
+        mRefreshIB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                CommUtil.showToast("refresh");
+                getData();
+            }
+        });
 
         mCompanyTV = (TextView) findViewById(R.id.tv_company);
         mCompanyTV.setOnLongClickListener(new View.OnLongClickListener() {
@@ -83,9 +101,14 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
         });
     }
 
+    private void getData() {
+//        showProgress("正在加载数据...");
+        util.getGoodsList(null, -1, -1, null);
+    }
+
     @Override
     protected void loadData() {
-
+        getData();
     }
 
     @Override
@@ -131,5 +154,23 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
         anim.setFillAfter(true);
         mIndicatorView.startAnimation(anim);
         curPos = pos;
+    }
+
+    @Override
+    public void onSucceed(int what, Response response) {
+//        hideProgress();
+        String respStr = response.get().toString();
+        switch (what) {
+            case Constants.GOODS_LIST_TAG:
+                GoodsListResp resp = JSON.parseObject(respStr, GoodsListResp.class);
+                ((ShoppingFragment) fragments[0]).setData(resp.getData());
+                break;
+        }
+    }
+
+    @Override
+    public void onFailed(int what, Response response) {
+//        hideProgress();
+        CommUtil.showToast("数据请求失败！");
     }
 }

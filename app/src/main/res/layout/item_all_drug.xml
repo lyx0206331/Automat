@@ -17,7 +17,7 @@
             android:id="@+id/iv_drug"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@mipmap/icon_welcome"/>
+            android:src="@drawable/ic_img_default" />
         <TextView
             android:id="@+id/tv_shadow"
             android:layout_width="match_parent"

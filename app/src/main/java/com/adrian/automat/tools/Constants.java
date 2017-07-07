@@ -18,6 +18,7 @@ public class Constants {
     public static final int MODIFY_PATHWAY_DATA_TAG = 5;
 
     public static final String SERVER_URL = "http://www.zrvend.cn";
+    public static final String IMG_DOMAIN = "http://zhirui.oss-cn-shanghai.aliyuncs.com";
 
     public static final String LOGIN_URL = SERVER_URL + "/login";   //登录
     public static final String GOODS_LIST_URL = SERVER_URL + "/sys/goods/sale/list";    //商品列表
@@ -25,5 +26,9 @@ public class Constants {
     public static final String MACHINE_INFO_URL = SERVER_URL + "/sys/machine/get";    //售货机详细信息
     public static final String MACHINE_REPORT_URL = SERVER_URL + "/sys/machine/report";    //售货机上报信息
     public static final String MODIFY_PATHWAY_DATA_URL = SERVER_URL + "/sys/machinegrid/change";    //批量修改轨道当前商品数据及最大商品数量
+
+    public static final String PARAM_ORDINAL = "ordinal";
+    public static final String PARAM_GOODSID = "goods_id";
+    public static final String PARAM_GOODSTYPE = "goods_type";
 
 }

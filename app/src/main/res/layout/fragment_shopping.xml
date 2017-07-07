@@ -97,7 +97,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="20dp"
-                android:src="@color/normal" />
+                android:src="@drawable/ic_img_default" />
 
             <TextView
                 android:id="@+id/tv_rec_name_0"

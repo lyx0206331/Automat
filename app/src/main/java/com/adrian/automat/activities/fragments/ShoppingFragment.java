@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import com.adrian.automat.activities.MapActivity;
 import com.adrian.automat.pojo.response.GoodsBean;
 import com.adrian.automat.pojo.response.GoodsListResp;
 import com.adrian.automat.tools.CommUtil;
+import com.adrian.automat.tools.Constants;
 import com.adrian.automat.tools.HttpListener;
 import com.adrian.automat.tools.NetUtil;
 import com.alibaba.fastjson.JSON;
@@ -58,7 +60,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ShoppingFragment extends BaseFragment implements View.OnClickListener, HttpListener,
+public class ShoppingFragment extends BaseFragment implements View.OnClickListener,
         LocationSource,
         AMapLocationListener {
 
@@ -88,15 +90,12 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
     private MapView mMapView;
     private AMap mAMap;
 
-    private NetUtil util;
-
     private List<String> localImages;
+    private List<GoodsBean> recList = new ArrayList<>();
 
     private String videoUrl = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
 
     public ShoppingFragment() {
-        // Required empty public constructor
-        util = new NetUtil(getActivity(), this);
     }
 
 
@@ -197,7 +196,7 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
     public void onResume() {
         super.onResume();
         banner.startAutoPlay();
-        util.getGoodsList(null, -1, -1, null);
+//        util.getGoodsList(null, -1, -1, null);
         mMapView.onResume();
     }
 
@@ -240,30 +239,56 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
                 break;
             case R.id.ll_rec_0:
 //                CommUtil.showToast("推荐0");
-                Bundle bundle0 = new Bundle();
-                startActivity(DetailActivity.class, bundle0);
+                if (recList.size() > 0) {
+                    Bundle bundle0 = new Bundle();
+                    bundle0.putInt(Constants.PARAM_GOODSID, recList.get(0).getGoodsId());
+                    bundle0.putInt(Constants.PARAM_GOODSTYPE, recList.get(0).getGoodsTypeId());
+                    bundle0.putString(Constants.PARAM_ORDINAL, recList.get(0).getOrdinal());
+                    startActivity(DetailActivity.class, bundle0);
+                }
                 break;
             case R.id.ll_rec_1:
 //                CommUtil.showToast("推荐1");
-                Bundle bundle1 = new Bundle();
-                startActivity(DetailActivity.class, bundle1);
+                if (recList.size() > 1) {
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putInt(Constants.PARAM_GOODSID, recList.get(1).getGoodsId());
+                    bundle1.putInt(Constants.PARAM_GOODSTYPE, recList.get(1).getGoodsTypeId());
+                    bundle1.putString(Constants.PARAM_ORDINAL, recList.get(1).getOrdinal());
+                    startActivity(DetailActivity.class, bundle1);
+                }
                 break;
             case R.id.ll_rec_2:
 //                CommUtil.showToast("推荐2");
-                Bundle bundle2 = new Bundle();
-                startActivity(DetailActivity.class, bundle2);
+                if (recList.size() > 2) {
+                    Bundle bundle2 = new Bundle();
+                    bundle2.putInt(Constants.PARAM_GOODSID, recList.get(2).getGoodsId());
+                    bundle2.putInt(Constants.PARAM_GOODSTYPE, recList.get(2).getGoodsTypeId());
+                    bundle2.putString(Constants.PARAM_ORDINAL, recList.get(2).getOrdinal());
+                    startActivity(DetailActivity.class, bundle2);
+                }
                 break;
         }
     }
 
-    @Override
-    public void onSucceed(int what, Response response) {
-        String respStr = response.get().toString();
-        GoodsListResp resp = JSON.parseObject(respStr, GoodsListResp.class);
-//        CommUtil.logE(TAG, resp.toString());
-        List<GoodsBean> data = sortGoods(resp.getData());
+    private List<GoodsBean> sortGoods(List<GoodsBean> list) {
+//        for (GoodsBean bean :
+//                list) {
+//            bean.setWeight(((int) (Math.random() * 10)));
+//        }
+//        for (GoodsBean bean : list) {
+//            CommUtil.logE(TAG, "befor weight:" + bean.getWeight());
+//        }
+        Collections.sort(list);
+        for (GoodsBean bean : list) {
+            CommUtil.logE(TAG, "after sort:" + bean.toString());
+        }
+        return list;
+    }
 
-        int count = data.size();
+    public void setData(List<GoodsBean> data) {
+        recList = sortGoods(data);
+
+        int count = recList.size();
         switch (count) {
             case 0:
                 mRec0LL.setVisibility(View.INVISIBLE);
@@ -274,56 +299,70 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
                 mRec0LL.setVisibility(View.VISIBLE);
                 mRec1LL.setVisibility(View.INVISIBLE);
                 mRec2LL.setVisibility(View.INVISIBLE);
-                mRecName0TV.setText(data.get(0).getName());
-                mRecPrice0TV.setText("￥" + data.get(0).getPrice());
-                Glide.with(getActivity()).load("http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg").into(mRec0IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
+                mRecName0TV.setText(recList.get(0).getName());
+                mRecPrice0TV.setText("￥" + recList.get(0).getPrice());
+                if (TextUtils.isEmpty(recList.get(0).getImg())) {
+                    mRec0IV.setImageResource(R.drawable.ic_img_failed);
+                } else {
+                    Glide.with(getActivity()).load(Constants.IMG_DOMAIN + "/" + recList.get(0).getImg()).into(mRec0IV).onLoadFailed(getResources().getDrawable(R.drawable.ic_img_failed));
+                }
                 break;
             case 2:
                 mRec0LL.setVisibility(View.VISIBLE);
                 mRec1LL.setVisibility(View.VISIBLE);
                 mRec2LL.setVisibility(View.INVISIBLE);
-                mRecName0TV.setText(data.get(0).getName());
-                mRecPrice0TV.setText("￥" + data.get(0).getPrice());
-                mRecName1TV.setText(data.get(1).getName());
-                mRecPrice1TV.setText("￥" + data.get(1).getPrice());
-                Glide.with(getActivity()).load("http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg").into(mRec0IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
-                Glide.with(getActivity()).load("http://img0.imgtn.bdimg.com/it/u=2890974895,2151831020&fm=214&gp=0.jpg").into(mRec1IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
+                mRecName0TV.setText(recList.get(0).getName());
+                mRecPrice0TV.setText("￥" + recList.get(0).getPrice());
+                mRecName1TV.setText(recList.get(1).getName());
+                mRecPrice1TV.setText("￥" + recList.get(1).getPrice());
+                if (TextUtils.isEmpty(recList.get(0).getImg())) {
+                    mRec0IV.setImageResource(R.drawable.ic_img_failed);
+                } else {
+                    Glide.with(getActivity()).load(Constants.IMG_DOMAIN + "/" + recList.get(0).getImg()).into(mRec0IV).onLoadFailed(getResources().getDrawable(R.drawable.ic_img_failed));
+                }
+                if (TextUtils.isEmpty(recList.get(1).getImg())) {
+                    mRec1IV.setImageResource(R.drawable.ic_img_failed);
+                } else {
+                    Glide.with(getActivity()).load(Constants.IMG_DOMAIN + "/" + recList.get(1).getImg()).into(mRec1IV).onLoadFailed(getResources().getDrawable(R.drawable.ic_img_failed));
+                }
+//                Glide.with(getActivity()).load(Constants.IMG_DOMAIN + "/" + data.get(1).getImg()).into(mRec1IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
                 break;
             default:
                 mRec0LL.setVisibility(View.VISIBLE);
                 mRec1LL.setVisibility(View.VISIBLE);
                 mRec2LL.setVisibility(View.VISIBLE);
-                mRecName0TV.setText(data.get(0).getName());
-                mRecPrice0TV.setText("￥" + data.get(0).getPrice());
-                mRecName1TV.setText(data.get(1).getName());
-                mRecPrice1TV.setText("￥" + data.get(1).getPrice());
-                mRecName2TV.setText(data.get(2).getName());
-                mRecPrice2TV.setText("￥" + data.get(2).getPrice());
-                Glide.with(getActivity()).load("http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg").into(mRec0IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
-                Glide.with(getActivity()).load("http://img0.imgtn.bdimg.com/it/u=2890974895,2151831020&fm=214&gp=0.jpg").into(mRec1IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
-                Glide.with(getActivity()).load("http://img008.hc360.cn/g3/M08/FE/68/wKhQvlJWpKyEe6KUAAAAANIYEaE532.jpg..180x180.jpg").into(mRec2IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
+                mRecName0TV.setText(recList.get(0).getName());
+                mRecPrice0TV.setText("￥" + recList.get(0).getPrice());
+                mRecName1TV.setText(recList.get(1).getName());
+                mRecPrice1TV.setText("￥" + recList.get(1).getPrice());
+                mRecName2TV.setText(recList.get(2).getName());
+                mRecPrice2TV.setText("￥" + recList.get(2).getPrice());
+                if (TextUtils.isEmpty(recList.get(0).getImg())) {
+                    CommUtil.logE(TAG, "rec0 img is null");
+                    mRec0IV.setImageResource(R.drawable.ic_img_failed);
+                } else {
+                    CommUtil.logE(TAG, "rec0 img is " + recList.get(0).getImg());
+                    Glide.with(getActivity()).load(Constants.IMG_DOMAIN + "/" + recList.get(0).getImg()).into(mRec0IV);
+                }
+                if (TextUtils.isEmpty(recList.get(1).getImg())) {
+                    CommUtil.logE(TAG, "rec1 img is null");
+                    mRec1IV.setImageResource(R.drawable.ic_img_failed);
+                } else {
+                    CommUtil.logE(TAG, "rec1 img is " + recList.get(1).getImg());
+                    Glide.with(getActivity()).load(Constants.IMG_DOMAIN + "/" + recList.get(1).getImg()).into(mRec1IV);
+                }
+                if (TextUtils.isEmpty(recList.get(2).getImg())) {
+                    CommUtil.logE(TAG, "rec2 img is null");
+                    mRec2IV.setImageResource(R.drawable.ic_img_failed);
+                } else {
+                    CommUtil.logE(TAG, "rec2 img is " + recList.get(2).getImg());
+                    Glide.with(getActivity()).load(Constants.IMG_DOMAIN + "/" + recList.get(2).getImg()).into(mRec2IV);
+                }
+//                Glide.with(getActivity()).load(Constants.IMG_DOMAIN + "/" + data.get(0).getImg()).into(mRec0IV).onLoadFailed(getResources().getDrawable(R.drawable.ic_img_failed));
+//                Glide.with(getActivity()).load(Constants.IMG_DOMAIN + "/" + data.get(1).getImg()).into(mRec1IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
+//                Glide.with(getActivity()).load(Constants.IMG_DOMAIN + "/" + data.get(2).getImg()).into(mRec2IV)/*.onLoadFailed(getResources().getDrawable(R.mipmap.ic_launcher))*/;
                 break;
         }
-    }
-
-    @Override
-    public void onFailed(int what, Response response) {
-        CommUtil.showToast("数据请求失败！");
-    }
-
-    private List<GoodsBean> sortGoods(List<GoodsBean> list) {
-        for (GoodsBean bean :
-                list) {
-            bean.setWeight(((int) (Math.random() * 10)));
-        }
-//        for (GoodsBean bean : list) {
-//            CommUtil.logE(TAG, "befor weight:" + bean.getWeight());
-//        }
-        Collections.sort(list);
-        for (GoodsBean bean : list) {
-            CommUtil.logE(TAG, "after sort:" + bean.toString());
-        }
-        return list;
     }
 
     @Override

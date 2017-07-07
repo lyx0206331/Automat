@@ -1,6 +1,8 @@
 package com.adrian.automat.activities;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -15,7 +18,9 @@ import android.widget.RadioGroup;
 
 import com.adrian.automat.R;
 import com.adrian.automat.adapters.AllDrugAdapter;
+import com.adrian.automat.application.MyApplication;
 import com.adrian.automat.pojo.DrugSimpleInfo;
+import com.adrian.automat.pojo.GoodsTypeBean;
 import com.adrian.automat.pojo.response.GoodsBean;
 import com.adrian.automat.pojo.response.GoodsListResp;
 import com.adrian.automat.pojo.response.GoodsTypesResp;
@@ -27,7 +32,11 @@ import com.adrian.automat.widget.FlowRadioGroup;
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.stx.xhb.xbanner.XBanner;
+import com.yanzhenjie.nohttp.NoHttp;
+import com.yanzhenjie.nohttp.rest.Request;
+import com.yanzhenjie.nohttp.rest.RequestQueue;
 import com.yanzhenjie.nohttp.rest.Response;
+import com.yanzhenjie.nohttp.rest.SimpleResponseListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +50,7 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
     private Button mBackBtn;
     private FlowRadioGroup mTypeFRG;
     private AllDrugAdapter mAdapter;
+    private ImageButton mRefreshIB;
 
     private List<String> localImages;
 
@@ -65,34 +75,31 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
         mBannerNet = (XBanner) findViewById(R.id.banner_1);
         mBackBtn = (Button) findViewById(R.id.btn_back);
         mTypeFRG = (FlowRadioGroup) findViewById(R.id.frg_type);
-//        mTypeFRG.check(R.id.rb_type_0);
+        mRefreshIB = (ImageButton) findViewById(R.id.ib_refresh);
+        mRefreshIB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getData();
+            }
+        });
 
-//        mTypeFRG = new FlowRadioGroup(this);
-        for (int i = 0; i < 8; i++) {
-            RadioButton rb = new RadioButton(this);
-            rb.setButtonDrawable(null);
-            rb.setGravity(Gravity.CENTER);
-            int left = (int) getResources().getDimension(R.dimen.dp20);
-            int top = (int) getResources().getDimension(R.dimen.dp16);
-            rb.setPadding(left, top, left, top);
-            rb.setBackgroundResource(R.drawable.btn_right_bg_selector);
-            rb.setText("类别" + i);
-            rb.setTextColor(getResources().getColor(R.color.normal));
-            rb.setTextSize(12);
-            rb.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.drug_type_selector), null, null, null);
-            mTypeFRG.addView(rb);
-        }
-        ((RadioButton)mTypeFRG.getChildAt(0)).setChecked(true);
+        RadioButton rb = new RadioButton(this);
+        rb.setButtonDrawable(null);
+        rb.setGravity(Gravity.CENTER);
+        int left = (int) getResources().getDimension(R.dimen.dp20);
+        int top = (int) getResources().getDimension(R.dimen.dp16);
+        rb.setPadding(left * 2, top * 3 / 2, left * 2, top * 2);
+        rb.setBackgroundResource(R.drawable.btn_right_bg_selector);
+        rb.setText("所有");
+        rb.setTextColor(getResources().getColor(R.color.normal));
+        rb.setTextSize(12);
+//        rb.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.drug_type_selector), null, null, null);
+        mTypeFRG.addView(rb);
+        ((RadioButton) mTypeFRG.getChildAt(0)).setChecked(true);
 
         mDrugsGV = (GridView) findViewById(R.id.gv_drug);
         mAdapter = new AllDrugAdapter(this);
         mDrugsGV.setAdapter(mAdapter);
-
-//        List drugs = new ArrayList();
-//        for (int i = 0; i< 20; i++) {
-//            drugs.add(new DrugSimpleInfo(i + "", "http://pic.baike.soso.com/p/20111017/bki-20111017223041-848836407.jpg", "药品名称" + i, 0, 12.6f, i%3, 4));
-//        }
-//        mAdapter.setData(drugs);
 
         localImages = new ArrayList<>();
         localImages.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496407271033&di=fa1deaabe2b4792240b4dde3fbcaacda&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2F00%2F04%2F13%2F75%2F8db5a6d5cc09a89f6dc6c9d8bf2e3770.jpg");
@@ -127,7 +134,11 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
                 if (item.getNowNum() == 0) {
                     CommUtil.showToast("此药品已售罄!");
                 } else {
-                    startActivity(DetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.PARAM_ORDINAL, item.getOrdinal());
+                    bundle.putInt(Constants.PARAM_GOODSID, item.getGoodsId());
+                    bundle.putInt(Constants.PARAM_GOODSTYPE, item.getGoodsTypeId());
+                    startActivity(DetailActivity.class, bundle);
                 }
             }
         });
@@ -136,6 +147,36 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
     @Override
     protected void loadData() {
         util.getGoodsTypeList(1, 1000);
+        getData();
+    }
+
+    private RequestQueue requestQueues;
+
+    private void loadIcon(String iconUrl, final RadioButton rb) {
+        //第一步：创建Nohttp请求对列（如果是本类使用的比较频繁，在onCreate的时候初始化一次就行了，这里是为了怕忘记这个步骤）
+        requestQueues = NoHttp.newRequestQueue();
+        //第二步：创建请求对象（url是请求路径， RequestMethod.POST是请求方式）
+        final Request<Bitmap> imageRequest = NoHttp.createImageRequest(iconUrl);//这里 RequestMethod.GET可以不写（删除掉即可），默认的是Get方式请求
+        //第三步：加入到请求对列中，requestQueues.add()分别是请求列的请求标志，请求对象，监听回调
+        requestQueues.add(4, imageRequest, new SimpleResponseListener<Bitmap>() {
+            @Override//成功后的回调
+            public void onSucceed(int i, Response<Bitmap> response) {
+//                imageView.setImageBitmap(response.get());
+                Bitmap bmp = response.get();
+//                CommUtil.logE(TAG, "bmp w:" + bmp.getWidth() + " h:" + bmp.getHeight());
+                BitmapDrawable db = new BitmapDrawable(Bitmap.createBitmap(bmp, 0, 0, 48, 48));
+                rb.setCompoundDrawablesWithIntrinsicBounds(db, null, null, null);
+            }
+
+            @Override
+            public void onFailed(int what, Response<Bitmap> response) {
+                super.onFailed(what, response);
+            }
+        });
+    }
+
+    private void getData() {
+//        showProgress("正在加载数据...");
         util.getGoodsList(null, -1, -1, null);
     }
 
@@ -169,21 +210,43 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
 
     @Override
     public void onSucceed(int what, Response response) {
+//        hideProgress();
         String respStr = response.get().toString();
         switch (what) {
             case Constants.GOODS_TYPE_LIST_TAG:
                 GoodsTypesResp resp = JSON.parseObject(respStr, GoodsTypesResp.class);
                 CommUtil.logE(TAG, resp.toString());
+                List<GoodsTypeBean> types = resp.getData().getList();
+                int count = types.size();
+                for (int i = 0; i < count; i++) {
+                    RadioButton rb = new RadioButton(this);
+                    rb.setButtonDrawable(null);
+                    rb.setGravity(Gravity.CENTER);
+                    int left = (int) getResources().getDimension(R.dimen.dp20);
+                    int top = (int) getResources().getDimension(R.dimen.dp16);
+                    rb.setPadding(left, top, left, top);
+                    rb.setBackgroundResource(R.drawable.btn_right_bg_selector);
+                    rb.setText(types.get(i).getName());
+                    rb.setTextColor(getResources().getColor(R.color.normal));
+                    rb.setTextSize(12);
+//                    rb.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.drug_type_selector), null, null, null);
+                    loadIcon(Constants.IMG_DOMAIN + "/" + types.get(i).getImg(), rb);
+                    mTypeFRG.addView(rb);
+                }
+//                ((RadioButton) mTypeFRG.getChildAt(0)).setChecked(true);
                 break;
             case Constants.GOODS_LIST_TAG:
                 GoodsListResp goodsListResp = JSON.parseObject(respStr, GoodsListResp.class);
-                mAdapter.addData(goodsListResp.getData());
+//                CommUtil.logE("GOODS_COUNT", "goods count = " + goodsListResp.getData().size());
+//                MyApplication.getInstance().setAllGoodsList(goodsListResp.getData());
+                mAdapter.setData(goodsListResp.getData());
                 break;
         }
     }
 
     @Override
     public void onFailed(int what, Response response) {
-
+//        hideProgress();
+        CommUtil.logE(TAG, "数据请求失败!");
     }
 }
