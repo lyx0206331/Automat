@@ -27,7 +27,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class WelcomeActivity extends BaseActivity implements HttpListener {
 
-    private static final String TAG = "WelComeActivity";
+    private static final String TAG = "WelcomeActivity";
 
     private NetUtil util;
 
