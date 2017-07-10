@@ -1,43 +1,27 @@
 package com.adrian.automat.activities.fragments;
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.adrian.automat.R;
 import com.adrian.automat.activities.AllDrugActivity;
 import com.adrian.automat.activities.DetailActivity;
 import com.adrian.automat.activities.MapActivity;
-import com.adrian.automat.pojo.response.GoodsBean;
-import com.adrian.automat.pojo.response.GoodsListResp;
+import com.adrian.automat.pojo.GoodsBean;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.Constants;
-import com.adrian.automat.tools.HttpListener;
-import com.adrian.automat.tools.NetUtil;
-import com.alibaba.fastjson.JSON;
-import com.amap.api.fence.GeoFence;
-import com.amap.api.fence.GeoFenceListener;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -50,11 +34,9 @@ import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.bumptech.glide.Glide;
 import com.stx.xhb.xbanner.XBanner;
-import com.yanzhenjie.nohttp.rest.Response;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**

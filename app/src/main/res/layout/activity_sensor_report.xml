@@ -1,22 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.adrian.automat.activities.SensorReportActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp70"
-        android:gravity="center"
-        android:text="@string/sensor_state_report"
-        android:textSize="@dimen/font_large"
-        android:textColor="@color/normal" />
+    <data>
 
-    <View
+        <variable
+            name="SensorReport"
+            type="com.adrian.automat.activities.SensorReportActivity.SensorReport" />
+    </data>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp1"
-        android:background="@color/normal" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.adrian.automat.activities.SensorReportActivity">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp70"
+            android:gravity="center"
+            android:text="@string/sensor_state_report"
+            android:textColor="@color/normal"
+            android:textSize="@dimen/font_large" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp1"
+            android:layout_below="@id/tv_title"
+            android:background="@color/normal" />
+
+        <Button
+            android:id="@+id/btn_report"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:onClick="@{SensorReport.clickReport}"
+            android:background="@drawable/btn_fillet_bg_selector"
+            android:text="@string/report"
+            android:textColor="@drawable/btn_font_selector"
+            android:textSize="@dimen/font_normal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btn_report"
+            android:layout_below="@id/tv_title"
+            android:layout_marginRight="@dimen/dp1"
+            android:textSize="@dimen/font_normal"
+            android:text="@{SensorReport.machineInfo}" />
+    </RelativeLayout>
+</layout>

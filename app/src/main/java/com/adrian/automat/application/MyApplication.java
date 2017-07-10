@@ -4,7 +4,7 @@ import android.app.Application;
 import android.os.Handler;
 import android.os.Message;
 
-import com.adrian.automat.pojo.response.GoodsBean;
+import com.adrian.automat.pojo.GoodsBean;
 import com.adrian.automat.tools.CommUtil;
 import com.yanzhenjie.nohttp.Logger;
 import com.yanzhenjie.nohttp.NoHttp;
@@ -73,8 +73,32 @@ public class MyApplication extends Application {
         return allGoodsList;
     }
 
+    /**
+     * 设置所有商品缓存
+     *
+     * @param allGoodsList
+     */
     public void setAllGoodsList(List<GoodsBean> allGoodsList) {
         this.allGoodsList = allGoodsList;
+    }
+
+    /**
+     * 根据商品ID获取商品
+     *
+     * @param goodsId
+     * @return
+     */
+    public GoodsBean getGoodsById(int goodsId) {
+        if (allGoodsList == null || allGoodsList.size() == 0) {
+            return null;
+        }
+        for (GoodsBean bean :
+                allGoodsList) {
+            if (bean.getGoodsId() == goodsId) {
+                return bean;
+            }
+        }
+        return null;
     }
 
     public String getLoginToken() {
@@ -108,6 +132,7 @@ public class MyApplication extends Application {
         @Override
         public void handleMessage(Message msg) {
             CommUtil.showToast("一分钟未操作，可以弹出视频广告了");
+            CommUtil.logE("AD", "广告时间到!");
         }
     };
 }

@@ -1,6 +1,5 @@
 package com.adrian.automat.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
@@ -9,9 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.adrian.automat.R;
-import com.adrian.automat.pojo.response.GoodsBean;
+import com.adrian.automat.pojo.GoodsBean;
 import com.adrian.automat.pojo.response.GoodsListResp;
-import com.adrian.automat.pojo.response.GoodsTypesResp;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.Constants;
 import com.adrian.automat.tools.HttpListener;

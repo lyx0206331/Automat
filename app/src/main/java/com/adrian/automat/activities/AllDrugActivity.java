@@ -1,9 +1,7 @@
 package com.adrian.automat.activities;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -12,16 +10,13 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import com.adrian.automat.R;
 import com.adrian.automat.adapters.AllDrugAdapter;
 import com.adrian.automat.application.MyApplication;
-import com.adrian.automat.pojo.DrugSimpleInfo;
 import com.adrian.automat.pojo.GoodsTypeBean;
-import com.adrian.automat.pojo.response.GoodsBean;
+import com.adrian.automat.pojo.GoodsBean;
 import com.adrian.automat.pojo.response.GoodsListResp;
 import com.adrian.automat.pojo.response.GoodsTypesResp;
 import com.adrian.automat.tools.CommUtil;
@@ -33,6 +28,7 @@ import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.stx.xhb.xbanner.XBanner;
 import com.yanzhenjie.nohttp.NoHttp;
+import com.yanzhenjie.nohttp.rest.CacheMode;
 import com.yanzhenjie.nohttp.rest.Request;
 import com.yanzhenjie.nohttp.rest.RequestQueue;
 import com.yanzhenjie.nohttp.rest.Response;
@@ -157,6 +153,8 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
         requestQueues = NoHttp.newRequestQueue();
         //第二步：创建请求对象（url是请求路径， RequestMethod.POST是请求方式）
         final Request<Bitmap> imageRequest = NoHttp.createImageRequest(iconUrl);//这里 RequestMethod.GET可以不写（删除掉即可），默认的是Get方式请求
+        //REQUEST_NETWORK_FAILED_READ_CACHE请求失败返回上次缓存的数据
+        imageRequest.setCacheMode(CacheMode.REQUEST_NETWORK_FAILED_READ_CACHE);
         //第三步：加入到请求对列中，requestQueues.add()分别是请求列的请求标志，请求对象，监听回调
         requestQueues.add(4, imageRequest, new SimpleResponseListener<Bitmap>() {
             @Override//成功后的回调
@@ -215,7 +213,7 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
         switch (what) {
             case Constants.GOODS_TYPE_LIST_TAG:
                 GoodsTypesResp resp = JSON.parseObject(respStr, GoodsTypesResp.class);
-                CommUtil.logE(TAG, resp.toString());
+//                CommUtil.logE(TAG, resp.toString());
                 List<GoodsTypeBean> types = resp.getData().getList();
                 int count = types.size();
                 for (int i = 0; i < count; i++) {
@@ -238,7 +236,7 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
             case Constants.GOODS_LIST_TAG:
                 GoodsListResp goodsListResp = JSON.parseObject(respStr, GoodsListResp.class);
 //                CommUtil.logE("GOODS_COUNT", "goods count = " + goodsListResp.getData().size());
-//                MyApplication.getInstance().setAllGoodsList(goodsListResp.getData());
+                MyApplication.getInstance().setAllGoodsList(goodsListResp.getData());
                 mAdapter.setData(goodsListResp.getData());
                 break;
         }

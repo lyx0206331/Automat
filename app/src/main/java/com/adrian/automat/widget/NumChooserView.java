@@ -41,14 +41,14 @@ public class NumChooserView extends LinearLayout implements View.OnClickListener
                 if (curNum > min) {
                     setValue(--curNum);
                 } else {
-                    CommUtil.showToast("已达最小购买数量");
+                    CommUtil.showToast("已达最小数量");
                 }
                 break;
             case R.id.btn_plus:
                 if (curNum < max) {
                     setValue(++curNum);
                 } else {
-                    CommUtil.showToast("已达最大购买数量");
+                    CommUtil.showToast("已达最大数量");
                 }
                 break;
         }

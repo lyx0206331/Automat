@@ -10,9 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.adrian.automat.R;
-import com.adrian.automat.pojo.DrugSimpleInfo;
-import com.adrian.automat.pojo.response.GoodsBean;
-import com.adrian.automat.tools.CommUtil;
+import com.adrian.automat.pojo.GoodsBean;
 import com.adrian.automat.tools.Constants;
 import com.bumptech.glide.Glide;
 

@@ -1,5 +1,7 @@
 package com.adrian.automat.pojo.response;
 
+import com.adrian.automat.pojo.GoodsBean;
+
 import java.util.List;
 
 /**

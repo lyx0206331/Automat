@@ -15,6 +15,7 @@ import com.adrian.automat.activities.fragments.ActivityFragment;
 import com.adrian.automat.activities.fragments.DemoFragment;
 import com.adrian.automat.activities.fragments.QrCodeFragment;
 import com.adrian.automat.activities.fragments.ShoppingFragment;
+import com.adrian.automat.application.MyApplication;
 import com.adrian.automat.pojo.response.GoodsListResp;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.Constants;
@@ -164,6 +165,7 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
             case Constants.GOODS_LIST_TAG:
                 GoodsListResp resp = JSON.parseObject(respStr, GoodsListResp.class);
                 ((ShoppingFragment) fragments[0]).setData(resp.getData());
+                MyApplication.getInstance().setAllGoodsList(resp.getData());
                 break;
         }
     }

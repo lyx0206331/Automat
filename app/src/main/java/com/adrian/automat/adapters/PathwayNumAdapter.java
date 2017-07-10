@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.adrian.automat.R;
+import com.adrian.automat.application.MyApplication;
+import com.adrian.automat.pojo.MachineBean;
 import com.adrian.automat.pojo.PathwayBean;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.widget.NumChooserView;
@@ -14,15 +16,15 @@ import com.adrian.automat.widget.NumChooserView;
  * Created by adrian on 17-6-12.
  */
 
-public class PathwayNumAdapter extends MyBaseAdapter {
+public class PathwayNumAdapter extends MyBaseAdapter<MachineBean> {
     public PathwayNumAdapter(Context context) {
         super(context);
     }
 
     public void setOneKeyMax() {
         for (int i = 0; i < getCount(); i++) {
-            PathwayBean bean = (PathwayBean) getItem(i);
-            bean.setCount(bean.getMax());
+            MachineBean bean = (MachineBean) getItem(i);
+            bean.setNowNum(bean.getMaxNum());
         }
         notifyDataSetChanged();
     }
@@ -41,15 +43,15 @@ public class PathwayNumAdapter extends MyBaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 //        CommUtil.logE("PATHWAYNUM", "pos:" + position);
-        final PathwayBean item = (PathwayBean) getItem(position);
-        holder.mPathwayNumTV.setText(item.getPathwayNum());
-        holder.mDrugNameTV.setText(item.getDrugName());
-        holder.mNCV.setValue(item.getCount());
-        holder.mNCV.setMax(item.getMax());
+        final MachineBean item = (MachineBean) getItem(position);
+        holder.mPathwayNumTV.setText(item.getOrdinal());
+        holder.mDrugNameTV.setText(MyApplication.getInstance().getGoodsById(item.getNowGoodsId()).getName());
+        holder.mNCV.setValue(item.getNowNum());
+        holder.mNCV.setMax(item.getMaxNum());
         holder.mNCV.setListener(new NumChooserView.IValueChangedListener() {
             @Override
             public void valueChanged(int value) {
-                item.setCount(value);
+                item.setNowNum(value);
 //                CommUtil.showToast(item.getPathwayNum() + " " + item.getDrugName() + " " + value);
             }
         });

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.adrian.automat.application.MyApplication;
 import com.adrian.automat.pojo.PathwayDataBean;
 import com.adrian.automat.pojo.request.LoginReq;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yanzhenjie.nohttp.NoHttp;
 import com.yanzhenjie.nohttp.RequestMethod;
@@ -129,7 +130,10 @@ public class NetUtil {
     public void modifyPathwayData(List<PathwayDataBean> datas) {
         String url = Constants.MODIFY_PATHWAY_DATA_URL + "?token=" + MyApplication.getInstance().getLoginToken();
         CommUtil.logE("MACHINEINFO", url);
-        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.PUT);
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.POST);
+//        req.add("grids", JSON.toJSONString(datas));
+        req.setDefineRequestBodyForJson(JSON.toJSONString(datas));
+//        CommUtil.logE("MODIFY", JSON.toJSONString(datas));
         request(Constants.MODIFY_PATHWAY_DATA_TAG, req, jsonHttpListener, false, true);
     }
 

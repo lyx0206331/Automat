@@ -1,9 +1,7 @@
-package com.adrian.automat.pojo.response;
+package com.adrian.automat.pojo;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-
-import java.util.Comparator;
 
 /**
  * Created by adrian on 17-6-15.
