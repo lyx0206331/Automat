@@ -269,7 +269,15 @@ public class CommUtil {
         Toast.makeText(MyApplication.getInstance(), msgId, Toast.LENGTH_SHORT).show();
     }
 
-    public static void createDimensXML(String name, int start, int end) {
+    /**
+     * 生成dimens.xml文件
+     *
+     * @param name  文件名
+     * @param start 起始位置
+     * @param end   终止位置
+     * @param unit  单位。px/dp/sp等等
+     */
+    public static void createDimensXML(String name, int start, int end, String unit) {
 //        FileOutputStream fos = null;
         FileWriter fw = null;
         BufferedWriter bw = null;
@@ -285,8 +293,8 @@ public class CommUtil {
             bw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                     "<resources>\n");
             for (int i = start; i <= end; i++) {
-                bw.write("<dimen name=\"dp" + i + "\">" + i + ".0px</dimen>\n");
-                bw.write("<dimen name=\"dp" + i + "_5\">" + i + ".5px</dimen>\n");
+                bw.write("<dimen name=\"dp" + i + "\">" + i + ".0" + unit + "</dimen>\n");
+                bw.write("<dimen name=\"dp" + i + "_5\">" + i + ".5" + unit + "</dimen>\n");
             }
             bw.write("</resources>");
             bw.flush();

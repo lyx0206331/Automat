@@ -14,6 +14,7 @@ import com.adrian.automat.pojo.MachineBean;
 import com.adrian.automat.pojo.PathwayBean;
 import com.adrian.automat.pojo.PathwayDataBean;
 import com.adrian.automat.pojo.response.MachineInfoResp;
+import com.adrian.automat.pojo.response.ModifyPathwayResp;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.Constants;
 import com.adrian.automat.tools.HttpListener;
@@ -66,16 +67,6 @@ public class ModifyPathwayActivity extends BaseActivity implements View.OnClickL
 
     @Override
     protected void loadData() {
-//        datas = new ArrayList<>();
-//        for (int i = 0; i < 72; i++) {
-//            PathwayBean bean = new PathwayBean();
-//            bean.setPathwayNum("1-" + (i / 9 + 1) + "-" + (i % 9 + 1));
-//            bean.setDrugName("药品" + i);
-//            bean.setCount(i);
-//            bean.setMax(72);
-//            datas.add(bean);
-//        }
-//        mAdapter.setDatas(datas);
         util.getMachineInfo();
     }
 
@@ -105,7 +96,6 @@ public class ModifyPathwayActivity extends BaseActivity implements View.OnClickL
                     data.add(item);
                 }
                 util.modifyPathwayData(data);
-//                finish();
                 break;
         }
     }
@@ -124,13 +114,19 @@ public class ModifyPathwayActivity extends BaseActivity implements View.OnClickL
                 break;
             case Constants.MODIFY_PATHWAY_DATA_TAG:
                 JSONObject json = JSON.parseObject(respStr);
-                finish();
+                ModifyPathwayResp resp1 = JSON.parseObject(respStr, ModifyPathwayResp.class);
+                if (resp1.isData()) {
+                    CommUtil.showToast("成功修改货道数据!");
+                    finish();
+                } else {
+                    CommUtil.showToast("修改货道数据失败:" + resp1.getMsg());
+                }
                 break;
         }
     }
 
     @Override
     public void onFailed(int what, Response response) {
-
+        CommUtil.showToast("数据提交失败!");
     }
 }

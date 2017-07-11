@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.adrian.automat.R;
 import com.adrian.automat.application.MyApplication;
 import com.adrian.automat.pojo.PathwayDataBean;
 import com.adrian.automat.pojo.request.LoginReq;
@@ -40,6 +41,10 @@ public class NetUtil {
         jsonHttpListener = listener;
         // 初始化请求队列，传入的参数是请求并发值。
         mQueue = NoHttp.newRequestQueue(1);
+
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.connect_error);
+        }
     }
 
     /**
@@ -49,6 +54,10 @@ public class NetUtil {
      * @param pwd
      */
     public void loginDev(String userName, String pwd) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
         Request<JSONObject> req = new FastJsonRequest(Constants.LOGIN_URL, RequestMethod.POST);
         req.add("userName", userName);
         req.add("password", pwd);
@@ -64,6 +73,10 @@ public class NetUtil {
      * @param name
      */
     public void getGoodsList(String ordinal, int goodsId, int goodsTypeId, String name) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
         String url = Constants.GOODS_LIST_URL + "?token=" + MyApplication.getInstance().getLoginToken();
         CommUtil.logE("GOODSLIST", url);
         Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
@@ -89,6 +102,10 @@ public class NetUtil {
      * @param pageSize
      */
     public void getGoodsTypeList(int pageNum, int pageSize) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
         String url = Constants.GOODS_TYPE_LIST_URL + "?token=" + MyApplication.getInstance().getLoginToken();
         CommUtil.logE("GOODSTYPELIST", url);
         Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
@@ -101,6 +118,10 @@ public class NetUtil {
      * 获取售货机详细信息
      */
     public void getMachineInfo() {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
         String url = Constants.MACHINE_INFO_URL + "?token=" + MyApplication.getInstance().getLoginToken();
         CommUtil.logE("MACHINEINFO", url);
         Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
@@ -114,6 +135,10 @@ public class NetUtil {
      * @param longitude
      */
     public void reportMachineInfo(double latitude, double longitude) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
         String url = Constants.MACHINE_REPORT_URL + "?token=" + MyApplication.getInstance().getLoginToken();
         CommUtil.logE("MACHINEINFO", url);
         Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.PUT);
@@ -128,12 +153,15 @@ public class NetUtil {
      * @param datas
      */
     public void modifyPathwayData(List<PathwayDataBean> datas) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
         String url = Constants.MODIFY_PATHWAY_DATA_URL + "?token=" + MyApplication.getInstance().getLoginToken();
         CommUtil.logE("MACHINEINFO", url);
         Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.POST);
-//        req.add("grids", JSON.toJSONString(datas));
         req.setDefineRequestBodyForJson(JSON.toJSONString(datas));
-//        CommUtil.logE("MODIFY", JSON.toJSONString(datas));
+        CommUtil.logE("MODIFY", JSON.toJSONString(datas));
         request(Constants.MODIFY_PATHWAY_DATA_TAG, req, jsonHttpListener, false, true);
     }
 

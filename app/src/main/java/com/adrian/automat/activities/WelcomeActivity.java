@@ -51,7 +51,7 @@ public class WelcomeActivity extends BaseActivity implements HttpListener {
 
     @Override
     protected void initViews() {
-        if (CommUtil.getWifiStatus(this)) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) != -1) {
             WelcomeActivityPermissionsDispatcher.allowedPermissionWithCheck(this);
         } else {
             CommUtil.showToast(R.string.connect_error);

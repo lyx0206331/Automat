@@ -64,7 +64,7 @@ public class MyApplication extends Application {
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
-//                CommUtil.createDimensXML("dimens.xml", 1, 1920);
+//                CommUtil.createDimensXML("dimens.xml", 1, 1920, "px");
 //            }
 //        }).start();
     }

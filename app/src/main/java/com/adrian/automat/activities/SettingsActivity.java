@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.adrian.automat.R;
+import com.adrian.automat.tools.GlideCacheUtil;
 import com.adrian.automat.widget.VolumnDialog;
 import com.bumptech.glide.Glide;
 
@@ -57,6 +58,8 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         mCheckTempBtn.setOnClickListener(this);
         mSensorReportBtn.setOnClickListener(this);
         mCloseBtn.setOnClickListener(this);
+
+        mClearFileBtn.setText(getString(R.string.clear_local_file) + "(" + GlideCacheUtil.getInstance().getCacheSize(this) + ")");
     }
 
     @Override
@@ -82,8 +85,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 startActivity(TestPathwayActivity.class);
                 break;
             case R.id.btn_clear_file:
-                Glide.get(this).clearDiskCache();
-                Glide.get(this).clearMemory();
+//                Glide.get(this).clearDiskCache();
+//                Glide.get(this).clearMemory();
+                GlideCacheUtil.getInstance().clearImageAllCache(this);
+                mClearFileBtn.setText(getString(R.string.clear_local_file) + "(" + GlideCacheUtil.getInstance().getCacheSize(this) + ")");
                 break;
             case R.id.btn_volumn_ctrl:
                 if (volumnDialog == null) {

@@ -62,9 +62,6 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         ordinal = bundle.getString(Constants.PARAM_ORDINAL);
 
         util = new NetUtil(this, this);
-        if (!CommUtil.getWifiStatus(this)) {
-            CommUtil.showToast(R.string.connect_error);
-        }
     }
 
     @Override

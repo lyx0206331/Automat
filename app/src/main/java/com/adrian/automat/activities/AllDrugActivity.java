@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -51,6 +52,7 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
     private List<String> localImages;
 
     private NetUtil util;
+    private int cutType = -1;   //当前药品类型，-1为所有药品
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +62,6 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
     @Override
     protected void initVariables() {
         util = new NetUtil(this, this);
-        if (!CommUtil.getWifiStatus(this)) {
-            CommUtil.showToast(R.string.connect_error);
-        }
     }
 
     @Override
@@ -75,7 +74,7 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
         mRefreshIB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getData();
+                getDataByType(cutType);
             }
         });
 
@@ -91,6 +90,14 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
         rb.setTextSize(12);
 //        rb.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.drug_type_selector), null, null, null);
         mTypeFRG.addView(rb);
+        rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    getDataByType(-1);
+                }
+            }
+        });
         ((RadioButton) mTypeFRG.getChildAt(0)).setChecked(true);
 
         mDrugsGV = (GridView) findViewById(R.id.gv_drug);
@@ -143,7 +150,7 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
     @Override
     protected void loadData() {
         util.getGoodsTypeList(1, 1000);
-        getData();
+//        getData();
     }
 
     private RequestQueue requestQueues;
@@ -173,9 +180,10 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
         });
     }
 
-    private void getData() {
+    private void getDataByType(int type) {
 //        showProgress("正在加载数据...");
-        util.getGoodsList(null, -1, -1, null);
+        cutType = type;
+        util.getGoodsList(null, -1, type, null);
     }
 
     @Override
@@ -215,8 +223,7 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
                 GoodsTypesResp resp = JSON.parseObject(respStr, GoodsTypesResp.class);
 //                CommUtil.logE(TAG, resp.toString());
                 List<GoodsTypeBean> types = resp.getData().getList();
-                int count = types.size();
-                for (int i = 0; i < count; i++) {
+                for (final GoodsTypeBean type : types) {
                     RadioButton rb = new RadioButton(this);
                     rb.setButtonDrawable(null);
                     rb.setGravity(Gravity.CENTER);
@@ -224,19 +231,30 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
                     int top = (int) getResources().getDimension(R.dimen.dp16);
                     rb.setPadding(left, top, left, top);
                     rb.setBackgroundResource(R.drawable.btn_right_bg_selector);
-                    rb.setText(types.get(i).getName());
+                    rb.setText(type.getName());
                     rb.setTextColor(getResources().getColor(R.color.normal));
                     rb.setTextSize(12);
 //                    rb.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.drug_type_selector), null, null, null);
-                    loadIcon(Constants.IMG_DOMAIN + "/" + types.get(i).getImg(), rb);
+                    loadIcon(Constants.IMG_DOMAIN + "/" + type.getImg(), rb);
                     mTypeFRG.addView(rb);
+                    rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                            CommUtil.logE(TAG, "isChecked:" + isChecked);
+                            if (isChecked) {
+                                getDataByType(type.getGoodsTypeId());
+                            }
+                        }
+                    });
                 }
 //                ((RadioButton) mTypeFRG.getChildAt(0)).setChecked(true);
                 break;
             case Constants.GOODS_LIST_TAG:
                 GoodsListResp goodsListResp = JSON.parseObject(respStr, GoodsListResp.class);
 //                CommUtil.logE("GOODS_COUNT", "goods count = " + goodsListResp.getData().size());
-                MyApplication.getInstance().setAllGoodsList(goodsListResp.getData());
+                if (cutType == -1) {
+                    MyApplication.getInstance().setAllGoodsList(goodsListResp.getData());
+                }
                 mAdapter.setData(goodsListResp.getData());
                 break;
         }
