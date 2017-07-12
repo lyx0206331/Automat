@@ -15,7 +15,9 @@ import com.yanzhenjie.nohttp.RequestMethod;
 import com.yanzhenjie.nohttp.rest.Request;
 import com.yanzhenjie.nohttp.rest.RequestQueue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by adrian on 17-6-15.
@@ -131,10 +133,9 @@ public class NetUtil {
     /**
      * 上报售货机信息
      *
-     * @param latitude
-     * @param longitude
+     * @param values
      */
-    public void reportMachineInfo(double latitude, double longitude) {
+    public void reportMachineInfo(Map<String, String> values) {
         if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
             CommUtil.showToast(R.string.error_please_check_network);
             return;
@@ -142,8 +143,8 @@ public class NetUtil {
         String url = Constants.MACHINE_REPORT_URL + "?token=" + MyApplication.getInstance().getLoginToken();
         CommUtil.logE("MACHINEINFO", url);
         Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.PUT);
-        req.add("latitude", latitude);
-        req.add("longitude", longitude);
+        String vStr = JSON.toJSONString(values);
+        req.setDefineRequestBodyForJson(vStr);
         request(Constants.MACHINE_REPORT_TAG, req, jsonHttpListener, false, true);
     }
 
@@ -161,7 +162,7 @@ public class NetUtil {
         CommUtil.logE("MACHINEINFO", url);
         Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.POST);
         req.setDefineRequestBodyForJson(JSON.toJSONString(datas));
-        CommUtil.logE("MODIFY", JSON.toJSONString(datas));
+//        CommUtil.logE("MODIFY", JSON.toJSONString(datas));
         request(Constants.MODIFY_PATHWAY_DATA_TAG, req, jsonHttpListener, false, true);
     }
 

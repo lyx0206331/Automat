@@ -11,12 +11,16 @@ import com.adrian.automat.BR;
 import com.adrian.automat.R;
 import com.adrian.automat.databinding.ActivitySensorReportBinding;
 import com.adrian.automat.pojo.response.MachineInfoResp;
+import com.adrian.automat.pojo.response.ModifyPathwayResp;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.Constants;
 import com.adrian.automat.tools.HttpListener;
 import com.adrian.automat.tools.NetUtil;
 import com.alibaba.fastjson.JSON;
 import com.yanzhenjie.nohttp.rest.Response;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SensorReportActivity extends BaseActivity implements HttpListener {
 
@@ -62,6 +66,15 @@ public class SensorReportActivity extends BaseActivity implements HttpListener {
                 CommUtil.logE(TAG, resp.toString());
                 report.setMachineInfo(resp.toString());
                 break;
+            case Constants.MACHINE_REPORT_TAG:
+                ModifyPathwayResp resp1 = JSON.parseObject(respStr, ModifyPathwayResp.class);
+                if (resp1.isData()) {
+                    CommUtil.showToast("已上报机器状态!");
+                    finish();
+                } else {
+                    CommUtil.showToast("机器状态上报失败:" + resp1.getMsg());
+                }
+                break;
         }
     }
 
@@ -87,7 +100,10 @@ public class SensorReportActivity extends BaseActivity implements HttpListener {
         }
 
         public void clickReport(View view) {
-            CommUtil.showToast("report");
+            Map<String, String> map = new HashMap<>();
+            map.put("latitude", 12.632 + "");
+            map.put("longitude", 24.897 + "");
+            util.reportMachineInfo(map);
         }
     }
 }
