@@ -3,8 +3,12 @@ package com.adrian.automat.application;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Message;
+import android.telephony.PhoneNumberUtils;
+import android.text.TextUtils;
 
 import com.adrian.automat.pojo.GoodsBean;
+import com.adrian.automat.receiver.JPushUtil;
+import com.adrian.automat.receiver.TagAliasOperatorHelper;
 import com.adrian.automat.tools.CommUtil;
 import com.yanzhenjie.nohttp.Logger;
 import com.yanzhenjie.nohttp.NoHttp;
@@ -14,6 +18,8 @@ import com.yanzhenjie.nohttp.cache.DiskCacheStore;
 import com.yanzhenjie.nohttp.cookie.DBCookieStore;
 
 import java.util.List;
+
+import cn.jpush.android.api.JPushInterface;
 
 /**
  * Created by ranqing on 2017/6/2.
@@ -60,6 +66,21 @@ public class MyApplication extends Application {
 
         Logger.setDebug(CommUtil.DEBUG);// 开启NoHttp的调试模式, 配置后可看到请求过程、日志和错误信息。
         Logger.setTag("NoHttpSample");// 设置NoHttp打印Log的tag。
+
+        JPushInterface.setDebugMode(CommUtil.DEBUG);    // 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this);            // 初始化 JPush
+
+        TagAliasOperatorHelper.TagAliasBean tagAliasBean = new TagAliasOperatorHelper.TagAliasBean();
+        tagAliasBean.action = TagAliasOperatorHelper.ACTION_SET;
+        String mac = CommUtil.getLocalMacAddress().replace(":", "");
+        CommUtil.logE("MAC", "mac:" + mac);
+        if (!TextUtils.isEmpty(mac) && JPushUtil.isValidTagAndAlias(mac)) {
+            tagAliasBean.alias = mac;
+            tagAliasBean.isAliasAction = true;
+            TagAliasOperatorHelper.getInstance().handleAction(getApplicationContext(), 1, tagAliasBean);
+        } else {
+            CommUtil.showToast("推送识别设置失败!");
+        }
 
 //        new Thread(new Runnable() {
 //            @Override

@@ -1,5 +1,9 @@
 package com.adrian.automat.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -17,6 +21,8 @@ import com.adrian.automat.activities.fragments.QrCodeFragment;
 import com.adrian.automat.activities.fragments.ShoppingFragment;
 import com.adrian.automat.application.MyApplication;
 import com.adrian.automat.pojo.response.GoodsListResp;
+import com.adrian.automat.receiver.JPushUtil;
+import com.adrian.automat.receiver.LocalBroadcastManager;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.Constants;
 import com.adrian.automat.tools.HttpListener;
@@ -41,6 +47,8 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
     private int stepW;
 
     private NetUtil util;
+
+    public static boolean isForeground = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +79,6 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
         mRefreshIB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                CommUtil.showToast("refresh");
                 getData();
             }
         });
@@ -100,10 +107,11 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
                 return false;
             }
         });
+
+        registerMessageReceiver();  // used for receive msg
     }
 
     private void getData() {
-//        showProgress("正在加载数据...");
         util.getGoodsList(null, -1, -1, null);
     }
 
@@ -140,7 +148,20 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
     }
 
     @Override
+    protected void onResume() {
+        isForeground = true;
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        isForeground = false;
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         super.onDestroy();
         fragments[0] = null;
         fragments[1] = null;
@@ -159,7 +180,6 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
 
     @Override
     public void onSucceed(int what, Response response) {
-//        hideProgress();
         String respStr = response.get().toString();
         switch (what) {
             case Constants.GOODS_LIST_TAG:
@@ -174,5 +194,45 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
     public void onFailed(int what, Response response) {
 //        hideProgress();
         CommUtil.showToast("数据请求失败！");
+    }
+
+    //===================================极光推送=====================================
+    //for receive customer msg from jpush server
+    private MessageReceiver mMessageReceiver;
+    public static final String MESSAGE_RECEIVED_ACTION = "com.adrian.automat.MESSAGE_RECEIVED_ACTION";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_EXTRAS = "extras";
+
+    public void registerMessageReceiver() {
+        mMessageReceiver = new MessageReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        filter.addAction(MESSAGE_RECEIVED_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, filter);
+    }
+
+    public class MessageReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if (MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
+                    String messge = intent.getStringExtra(KEY_MESSAGE);
+                    String extras = intent.getStringExtra(KEY_EXTRAS);
+                    StringBuilder showMsg = new StringBuilder();
+                    showMsg.append(KEY_MESSAGE + " : " + messge + "\n");
+                    if (!JPushUtil.isEmpty(extras)) {
+                        showMsg.append(KEY_EXTRAS + " : " + extras + "\n");
+                    }
+                    setCostomMsg(showMsg.toString());
+                }
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    private void setCostomMsg(String msg) {
+        CommUtil.showToast(msg);
     }
 }

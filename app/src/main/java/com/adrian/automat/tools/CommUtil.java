@@ -26,6 +26,7 @@ import android.os.PowerManager;
 import android.os.RecoverySystem;
 import android.os.StatFs;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -1702,5 +1703,25 @@ public class CommUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 获取手机IMEI号
+     */
+    public static String getIMEI(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+        String imei = telephonyManager.getDeviceId();
+
+        return imei;
+    }
+
+    /**
+     * 获取手机IMSI号
+     */
+    public static String getIMSI(Context context) {
+        TelephonyManager mTelephonyMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String imsi = mTelephonyMgr.getSubscriberId();
+
+        return imsi;
     }
 }
