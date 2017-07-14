@@ -115,7 +115,7 @@ public class ModifyPathwayActivity extends BaseActivity implements View.OnClickL
             case Constants.MODIFY_PATHWAY_DATA_TAG:
                 JSONObject json = JSON.parseObject(respStr);
                 ModifyPathwayResp resp1 = JSON.parseObject(respStr, ModifyPathwayResp.class);
-                if (resp1.isData()) {
+                if (resp1.getData() != null && resp1.getData().size() > 0) {
                     CommUtil.showToast("成功修改货道数据!");
                     finish();
                 } else {

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.adrian.automat.R;
 import com.adrian.automat.activities.AllDrugActivity;
 import com.adrian.automat.activities.DetailActivity;
+import com.adrian.automat.activities.MainActivity;
 import com.adrian.automat.activities.MapActivity;
 import com.adrian.automat.pojo.GoodsBean;
 import com.adrian.automat.tools.CommUtil;
@@ -37,7 +38,9 @@ import com.stx.xhb.xbanner.XBanner;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -225,7 +228,7 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
                     Bundle bundle0 = new Bundle();
                     bundle0.putInt(Constants.PARAM_GOODSID, recList.get(0).getGoodsId());
                     bundle0.putInt(Constants.PARAM_GOODSTYPE, recList.get(0).getGoodsTypeId());
-                    bundle0.putString(Constants.PARAM_ORDINAL, recList.get(0).getOrdinal());
+                    bundle0.putInt(Constants.PARAM_GRIDID, recList.get(0).getGridId());
                     startActivity(DetailActivity.class, bundle0);
                 }
                 break;
@@ -235,7 +238,7 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
                     Bundle bundle1 = new Bundle();
                     bundle1.putInt(Constants.PARAM_GOODSID, recList.get(1).getGoodsId());
                     bundle1.putInt(Constants.PARAM_GOODSTYPE, recList.get(1).getGoodsTypeId());
-                    bundle1.putString(Constants.PARAM_ORDINAL, recList.get(1).getOrdinal());
+                    bundle1.putInt(Constants.PARAM_GRIDID, recList.get(1).getGridId());
                     startActivity(DetailActivity.class, bundle1);
                 }
                 break;
@@ -245,7 +248,7 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
                     Bundle bundle2 = new Bundle();
                     bundle2.putInt(Constants.PARAM_GOODSID, recList.get(2).getGoodsId());
                     bundle2.putInt(Constants.PARAM_GOODSTYPE, recList.get(2).getGoodsTypeId());
-                    bundle2.putString(Constants.PARAM_ORDINAL, recList.get(2).getOrdinal());
+                    bundle2.putInt(Constants.PARAM_GRIDID, recList.get(2).getGridId());
                     startActivity(DetailActivity.class, bundle2);
                 }
                 break;
@@ -353,6 +356,12 @@ public class ShoppingFragment extends BaseFragment implements View.OnClickListen
             if (amapLocation != null && amapLocation.getErrorCode() == 0) {
 //                tvResult.setVisibility(View.GONE);
                 mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
+//                CommUtil.logE("LOC", "longitude:" + amapLocation.getLongitude() + " latitude:" + amapLocation.getLatitude());
+                Map<String, Object> map = new HashMap<>();
+                map.put("jpushId", CommUtil.getLocalMacAddress().replace(":", ""));
+                map.put("latitude", amapLocation.getLatitude());
+                map.put("longitude", amapLocation.getLongitude());
+                ((MainActivity) getActivity()).reportInfo(map);  //上传设备信息
             } else {
                 String errText = "定位失败," + amapLocation.getErrorCode() + ": "
                         + amapLocation.getErrorInfo();

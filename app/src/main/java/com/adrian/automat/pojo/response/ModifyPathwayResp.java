@@ -1,23 +1,19 @@
 package com.adrian.automat.pojo.response;
 
+import java.util.List;
+
 /**
  * Created by qing on 2017/7/11 0011.
  */
 
 public class ModifyPathwayResp extends BaseResp {
-    /**
-     * code : 0
-     * data : true
-     * msg :
-     */
+    private List<Integer> data;
 
-    private boolean data;
-
-    public boolean isData() {
+    public List<Integer> getData() {
         return data;
     }
 
-    public void setData(boolean data) {
+    public void setData(List<Integer> data) {
         this.data = data;
     }
 }

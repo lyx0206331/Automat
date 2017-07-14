@@ -2,6 +2,7 @@ package com.adrian.automat.tools;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.adrian.automat.R;
@@ -135,15 +136,16 @@ public class NetUtil {
      *
      * @param values
      */
-    public void reportMachineInfo(Map<String, String> values) {
+    public void reportMachineInfo(Map<String, Object> values) {
         if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
             CommUtil.showToast(R.string.error_please_check_network);
             return;
         }
         String url = Constants.MACHINE_REPORT_URL + "?token=" + MyApplication.getInstance().getLoginToken();
-        CommUtil.logE("MACHINEINFO", url);
+//        CommUtil.logE("MACHINEINFO", url);
         Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.PUT);
         String vStr = JSON.toJSONString(values);
+        CommUtil.logE("REPORT_INFO", vStr);
         req.setDefineRequestBodyForJson(vStr);
         request(Constants.MACHINE_REPORT_TAG, req, jsonHttpListener, false, true);
     }
@@ -164,6 +166,126 @@ public class NetUtil {
         req.setDefineRequestBodyForJson(JSON.toJSONString(datas));
 //        CommUtil.logE("MODIFY", JSON.toJSONString(datas));
         request(Constants.MODIFY_PATHWAY_DATA_TAG, req, jsonHttpListener, false, true);
+    }
+
+    /**
+     * 获取商品信息
+     *
+     * @param goodsId
+     */
+    public void getGoodsInfo(@NonNull int goodsId) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
+        String url = Constants.GET_GOODS_INFO_URL + "?token=" + MyApplication.getInstance().getLoginToken();
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
+        req.add("id", goodsId);
+        request(Constants.GET_GOODS_INFO_TAG, req, jsonHttpListener, false, true);
+    }
+
+    /**
+     * 取消订单
+     *
+     * @param orderId
+     */
+    public void cancelOrder(@NonNull String orderId) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
+        String url = Constants.CANCEL_ORDER_URL + "?token=" + MyApplication.getInstance().getLoginToken();
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
+        req.add("orderId", orderId);
+        request(Constants.CANCEL_ORDER_TAG, req, jsonHttpListener, false, true);
+    }
+
+    /**
+     * 创建订单
+     *
+     * @param userId
+     * @param gridId
+     * @param goodsId
+     */
+    public void createOrder(int userId, @NonNull int gridId, @NonNull int goodsId) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
+        String url = Constants.CREATE_ORDER_URL + "?token=" + MyApplication.getInstance().getLoginToken();
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.POST);
+        if (userId != -1) {
+            req.add("userId", userId);
+        }
+        req.add("gridId", gridId);
+        req.add("goodsId", goodsId);
+        request(Constants.CREATE_ORDER_TAG, req, jsonHttpListener, false, true);
+    }
+
+    /**
+     * 获取订单信息
+     *
+     * @param orderId
+     */
+    public void getOrderInfo(String orderId) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
+        String url = Constants.GET_ORDER_INFO_URL + "?token=" + MyApplication.getInstance().getLoginToken();
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
+        req.add("id", orderId);
+        request(Constants.GET_ORDER_INFO_TAG, req, jsonHttpListener, false, true);
+    }
+
+    /**
+     * 选择支付类型
+     *
+     * @param orderId
+     * @param payType 支付类型:alipay或weixin
+     */
+    public void choosePayType(@NonNull String orderId, @NonNull String payType) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
+        String url = Constants.CHOOSE_PAY_TYPE_URL + "?token=" + MyApplication.getInstance().getLoginToken();
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
+        req.add("orderId", orderId);
+        req.add("payType", payType);
+        request(Constants.CHOOSE_PAY_TYPE_TAG, req, jsonHttpListener, false, true);
+    }
+
+    /**
+     * 请求出货
+     *
+     * @param orderId
+     */
+    public void requestTakeDelivery(@NonNull String orderId) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
+        String url = Constants.REQUEST_TAKE_DELIVERY_URL + "?token=" + MyApplication.getInstance().getLoginToken();
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
+        req.add("orderId", orderId);
+        request(Constants.REQUEST_TAKE_DELIVERY_TAG, req, jsonHttpListener, false, true);
+    }
+
+    /**
+     * 出货
+     *
+     * @param orderId
+     */
+    public void takeDelivery(@NonNull String orderId) {
+        if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
+            CommUtil.showToast(R.string.error_please_check_network);
+            return;
+        }
+        String url = Constants.TAKE_DELIVERY_URL + "?token=" + MyApplication.getInstance().getLoginToken();
+        Request<JSONObject> req = new FastJsonRequest(url, RequestMethod.GET);
+        req.add("orderId", orderId);
+        request(Constants.TAKE_DELIVERY_TAG, req, jsonHttpListener, false, true);
     }
 
     /**

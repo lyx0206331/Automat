@@ -12,6 +12,7 @@ import com.adrian.automat.R;
 import com.adrian.automat.databinding.ActivitySensorReportBinding;
 import com.adrian.automat.pojo.response.MachineInfoResp;
 import com.adrian.automat.pojo.response.ModifyPathwayResp;
+import com.adrian.automat.pojo.response.ReportInfoResp;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.Constants;
 import com.adrian.automat.tools.HttpListener;
@@ -67,7 +68,7 @@ public class SensorReportActivity extends BaseActivity implements HttpListener {
                 report.setMachineInfo(resp.toString());
                 break;
             case Constants.MACHINE_REPORT_TAG:
-                ModifyPathwayResp resp1 = JSON.parseObject(respStr, ModifyPathwayResp.class);
+                ReportInfoResp resp1 = JSON.parseObject(respStr, ReportInfoResp.class);
                 if (resp1.isData()) {
                     CommUtil.showToast("已上报机器状态!");
                     finish();
@@ -100,10 +101,11 @@ public class SensorReportActivity extends BaseActivity implements HttpListener {
         }
 
         public void clickReport(View view) {
-            Map<String, String> map = new HashMap<>();
-            map.put("latitude", 12.632 + "");
-            map.put("longitude", 24.897 + "");
-            util.reportMachineInfo(map);
+//            Map<String, Object> map = new HashMap<>();
+//            map.put("jpushId", CommUtil.getLocalMacAddress().replace(":", ""));
+//            map.put("latitude", 12.632 + "");
+//            map.put("longitude", 24.897 + "");
+//            util.reportMachineInfo(map);
         }
     }
 }

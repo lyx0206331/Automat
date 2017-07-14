@@ -16,6 +16,14 @@ public class Constants {
     public static final int MACHINE_INFO_TAG = 3;
     public static final int MACHINE_REPORT_TAG = 4;
     public static final int MODIFY_PATHWAY_DATA_TAG = 5;
+    public static final int GET_GOODS_INFO_TAG = 6;
+    public static final int CREATE_ORDER_TAG = 7;
+    public static final int GET_ORDER_INFO_TAG = 8;
+    public static final int CHOOSE_PAY_TYPE_TAG = 9;
+    public static final int REQUEST_TAKE_DELIVERY_TAG = 10;
+    public static final int TAKE_DELIVERY_TAG = 11;
+    public static final int GET_QRCODE_TAG = 12;
+    public static final int CANCEL_ORDER_TAG = 13;
 
     public static final String SERVER_URL = "http://www.zrvend.cn";
     public static final String IMG_DOMAIN = "http://zhirui.oss-cn-shanghai.aliyuncs.com";
@@ -26,8 +34,16 @@ public class Constants {
     public static final String MACHINE_INFO_URL = SERVER_URL + "/sys/machine/get";    //售货机详细信息
     public static final String MACHINE_REPORT_URL = SERVER_URL + "/sys/machine/report";    //售货机上报信息
     public static final String MODIFY_PATHWAY_DATA_URL = SERVER_URL + "/sys/machinegrid/change";    //批量修改轨道当前商品数据及最大商品数量
+    public static final String GET_GOODS_INFO_URL = SERVER_URL + "/sys/goods/get";  //获取商品详细信息
+    public static final String CREATE_ORDER_URL = SERVER_URL + "/sys/orderinfo/create"; //创建订单
+    public static final String GET_ORDER_INFO_URL = SERVER_URL + "/sys/orderinfo/get";  //查看订单
+    public static final String CHOOSE_PAY_TYPE_URL = SERVER_URL + "/sys/orderinfo/pay"; //选择支付类型
+    public static final String REQUEST_TAKE_DELIVERY_URL = SERVER_URL + "/sys/orderinfo/preTake";    //请求出货
+    public static final String TAKE_DELIVERY_URL = SERVER_URL + "/sys/orderinfo/take";  //出货
+    public static final String GET_QRCODE_URL = SERVER_URL + "/qrcode"; //生成二维码
+    public static final String CANCEL_ORDER_URL = SERVER_URL + "/sys/orderinfo/cancel"; //取消订单
 
-    public static final String PARAM_ORDINAL = "ordinal";
+    public static final String PARAM_GRIDID = "gridId";
     public static final String PARAM_GOODSID = "goods_id";
     public static final String PARAM_GOODSTYPE = "goods_type";
 

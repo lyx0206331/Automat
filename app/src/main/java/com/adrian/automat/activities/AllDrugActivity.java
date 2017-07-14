@@ -138,7 +138,7 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
                     CommUtil.showToast("此药品已售罄!");
                 } else {
                     Bundle bundle = new Bundle();
-                    bundle.putString(Constants.PARAM_ORDINAL, item.getOrdinal());
+                    bundle.putInt(Constants.PARAM_GRIDID, item.getGridId());
                     bundle.putInt(Constants.PARAM_GOODSID, item.getGoodsId());
                     bundle.putInt(Constants.PARAM_GOODSTYPE, item.getGoodsTypeId());
                     startActivity(DetailActivity.class, bundle);

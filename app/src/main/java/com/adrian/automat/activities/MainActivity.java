@@ -21,6 +21,7 @@ import com.adrian.automat.activities.fragments.QrCodeFragment;
 import com.adrian.automat.activities.fragments.ShoppingFragment;
 import com.adrian.automat.application.MyApplication;
 import com.adrian.automat.pojo.response.GoodsListResp;
+import com.adrian.automat.pojo.response.ReportInfoResp;
 import com.adrian.automat.receiver.JPushUtil;
 import com.adrian.automat.receiver.LocalBroadcastManager;
 import com.adrian.automat.tools.CommUtil;
@@ -30,6 +31,8 @@ import com.adrian.automat.tools.NetUtil;
 import com.adrian.automat.widget.MngrLoginDialog;
 import com.alibaba.fastjson.JSON;
 import com.yanzhenjie.nohttp.rest.Response;
+
+import java.util.Map;
 
 public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnCheckedChangeListener, HttpListener {
 
@@ -115,6 +118,10 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
         util.getGoodsList(null, -1, -1, null);
     }
 
+    public void reportInfo(Map<String, Object> map) {
+        util.reportMachineInfo(map);
+    }
+
     @Override
     protected void loadData() {
         getData();
@@ -181,11 +188,18 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
     @Override
     public void onSucceed(int what, Response response) {
         String respStr = response.get().toString();
+//        CommUtil.logE("ALL", respStr);
         switch (what) {
             case Constants.GOODS_LIST_TAG:
                 GoodsListResp resp = JSON.parseObject(respStr, GoodsListResp.class);
                 ((ShoppingFragment) fragments[0]).setData(resp.getData());
                 MyApplication.getInstance().setAllGoodsList(resp.getData());
+                break;
+            case Constants.MACHINE_REPORT_TAG:
+                ReportInfoResp reportInfoResp = JSON.parseObject(respStr, ReportInfoResp.class);
+                if (!reportInfoResp.isData()) {
+                    CommUtil.showToast("设备信息上报失败。" + reportInfoResp.getMsg());
+                }
                 break;
         }
     }
@@ -233,6 +247,7 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
     }
 
     private void setCostomMsg(String msg) {
+        CommUtil.logE("JPUSH", msg);
         CommUtil.showToast(msg);
     }
 }

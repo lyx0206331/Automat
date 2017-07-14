@@ -9,12 +9,19 @@ import android.widget.TextView;
 
 import com.adrian.automat.R;
 import com.adrian.automat.pojo.GoodsBean;
+import com.adrian.automat.pojo.GoodsDetailBean;
+import com.adrian.automat.pojo.response.GoodsDetailResp;
 import com.adrian.automat.pojo.response.GoodsListResp;
+import com.adrian.automat.pojo.response.OrderCancelResp;
+import com.adrian.automat.pojo.response.OrderCreateResp;
+import com.adrian.automat.pojo.response.OrderInfoResp;
+import com.adrian.automat.pojo.response.PayTypeResp;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.Constants;
 import com.adrian.automat.tools.HttpListener;
 import com.adrian.automat.tools.NetUtil;
 import com.adrian.automat.widget.NumChooserView;
+import com.adrian.automat.widget.QRCodeDialog;
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.stx.xhb.xbanner.XBanner;
@@ -23,7 +30,7 @@ import com.yanzhenjie.nohttp.rest.Response;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailActivity extends BaseActivity implements View.OnClickListener, HttpListener, NumChooserView.IValueChangedListener {
+public class DetailActivity extends BaseActivity implements View.OnClickListener, HttpListener {
 
     private XBanner banner;
     private Button mBackBtn;
@@ -31,13 +38,14 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
     private ImageView mDrugImgIV;
     private TextView mDrugNameTV;
     private TextView mDrugPriceTV;
-    private TextView mStoreNumTV;
-    private TextView mTotalPriceTV;
-    private NumChooserView mNumChooserView;
+    private TextView mUnitTV;
+    private TextView mStandardTV;
     private Button mZfbBtn;
     private Button mWXBtn;
     private Button mUnionBtn;
     private TextView mIntroTV;
+
+    private QRCodeDialog qrCodeDialog;
 
     private List<String> localImages;
 
@@ -45,9 +53,11 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
 
     private int goodsId;
     private int goodsType;
-    private String ordinal;
+    private int gridId;
 
-    private float price;
+    private int userId = -1;
+    private GoodsDetailBean detailBean;
+    private String payType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +69,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         Bundle bundle = getIntent().getExtras();
         goodsId = bundle.getInt(Constants.PARAM_GOODSID);
         goodsType = bundle.getInt(Constants.PARAM_GOODSTYPE);
-        ordinal = bundle.getString(Constants.PARAM_ORDINAL);
+        gridId = bundle.getInt(Constants.PARAM_GRIDID);
 
         util = new NetUtil(this, this);
     }
@@ -72,9 +82,8 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         mDrugImgIV = (ImageView) findViewById(R.id.iv_detail_img);
         mDrugNameTV = (TextView) findViewById(R.id.tv_drug_name);
         mDrugPriceTV = (TextView) findViewById(R.id.tv_drug_price);
-        mStoreNumTV = (TextView) findViewById(R.id.tv_store_num);
-        mTotalPriceTV = (TextView) findViewById(R.id.tv_total_price);
-        mNumChooserView = (NumChooserView) findViewById(R.id.number_chooser);
+        mUnitTV = (TextView) findViewById(R.id.tv_unit);
+        mStandardTV = (TextView) findViewById(R.id.tv_standard);
         mZfbBtn = (Button) findViewById(R.id.btn_zfb);
         mWXBtn = (Button) findViewById(R.id.btn_wx);
         mUnionBtn = (Button) findViewById(R.id.btn_union);
@@ -86,7 +95,6 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         mZfbBtn.setOnClickListener(this);
         mWXBtn.setOnClickListener(this);
         mUnionBtn.setOnClickListener(this);
-        mNumChooserView.setListener(this);
 
         localImages = new ArrayList<>();
         localImages.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1496407271033&di=fa1deaabe2b4792240b4dde3fbcaacda&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2F00%2F04%2F13%2F75%2F8db5a6d5cc09a89f6dc6c9d8bf2e3770.jpg");
@@ -112,7 +120,8 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void loadData() {
-        util.getGoodsList(ordinal, goodsId, goodsType, null);
+//        util.getGoodsList(ordinal, goodsId, goodsType, null);
+        util.getGoodsInfo(goodsId);
     }
 
     @Override
@@ -141,32 +150,65 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
             case R.id.btn_member:
                 break;
             case R.id.btn_zfb:
+                createOrder("alipay");
                 break;
             case R.id.btn_wx:
+                createOrder("weixin");
                 break;
             case R.id.btn_union:
+//                createOrder("union");
                 break;
+        }
+    }
+
+    private void createOrder(String payType) {
+        if (detailBean != null) {
+            this.payType = payType;
+            util.createOrder(userId, gridId, detailBean.getGoodsId());
         }
     }
 
     @Override
     public void onSucceed(int what, Response response) {
         String respStr = response.get().toString();
+        CommUtil.logE("GOODSINFO", respStr);
         switch (what) {
-            case Constants.GOODS_LIST_TAG:
-                GoodsListResp goodsListResp = JSON.parseObject(respStr, GoodsListResp.class);
-//                CommUtil.logE("GOODS_COUNT", "goods count = " + goodsListResp.getData().size());
-//                CommUtil.logE("GOODS", goodsListResp.getData().get(0).toString());
-                if (goodsListResp.getData() != null && goodsListResp.getData().size() > 0) {
-                    GoodsBean bean = goodsListResp.getData().get(0);
-                    Glide.with(this).load(Constants.IMG_DOMAIN + "/" + bean.getImg()).into(mDrugImgIV);
-                    mDrugNameTV.setText(bean.getName());
-                    price = bean.getPrice();
-                    mDrugPriceTV.setText("￥" + price);
-                    mIntroTV.setText("规格:" + bean.getStandard() + "\n生产商:" + bean.getFactory() + "\n简介:" + bean.getSummary());
-                    mStoreNumTV.setText("库存:" + bean.getNowNum());
-                    mNumChooserView.setMax(bean.getNowNum());
-                    mTotalPriceTV.setText("￥" + price);
+            case Constants.GET_GOODS_INFO_TAG:
+                GoodsDetailResp goodsDetailResp = JSON.parseObject(respStr, GoodsDetailResp.class);
+//                CommUtil.logE("GOODSINFO", goodsDetailResp.toString());
+                if (goodsDetailResp != null) {
+                    detailBean = goodsDetailResp.getData();
+                    Glide.with(this).load(Constants.IMG_DOMAIN + "/" + detailBean.getImg()).into(mDrugImgIV);
+                    mDrugNameTV.setText(detailBean.getName());
+                    mDrugPriceTV.setText("￥" + detailBean.getPrice());
+                    mUnitTV.setText(detailBean.getUnit());
+                    mStandardTV.setText(detailBean.getStandard());
+                    mIntroTV.setText("生产商:" + detailBean.getFactory() + "\n简介:" + detailBean.getSummary());
+                }
+                break;
+            case Constants.CREATE_ORDER_TAG:
+                OrderCreateResp orderCreateResp = JSON.parseObject(respStr, OrderCreateResp.class);
+                if (orderCreateResp != null) {
+//                    util.getOrderInfo(orderCreateResp.getData());
+                    util.choosePayType(orderCreateResp.getData(), payType);
+                }
+                break;
+            case Constants.CANCEL_ORDER_TAG:
+                OrderCancelResp orderCancelResp = JSON.parseObject(respStr, OrderCancelResp.class);
+                if (orderCancelResp != null) {
+                    CommUtil.showToast(orderCancelResp.isData() ? "成功取消订单!" : "取消订单失败!");
+                }
+                break;
+            case Constants.GET_ORDER_INFO_TAG:
+                OrderInfoResp orderInfoResp = JSON.parseObject(respStr, OrderInfoResp.class);
+                if (orderInfoResp != null && orderInfoResp.getData() != null) {
+                    util.cancelOrder(orderInfoResp.getData().getOrderId());
+                }
+                break;
+            case Constants.CHOOSE_PAY_TYPE_TAG:
+                PayTypeResp payTypeResp = JSON.parseObject(respStr, PayTypeResp.class);
+                if (payTypeResp != null) {
+
                 }
                 break;
         }
@@ -177,8 +219,4 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
 
     }
 
-    @Override
-    public void valueChanged(int value) {
-        mTotalPriceTV.setText("￥" + value * price);
-    }
 }
