@@ -208,7 +208,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
             case Constants.CHOOSE_PAY_TYPE_TAG:
                 PayTypeResp payTypeResp = JSON.parseObject(respStr, PayTypeResp.class);
                 if (payTypeResp != null) {
-
+                    String qrCodeUrl = payTypeResp.getData();
                 }
                 break;
         }
