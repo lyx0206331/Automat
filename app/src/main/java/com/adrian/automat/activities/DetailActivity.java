@@ -8,11 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.adrian.automat.R;
-import com.adrian.automat.pojo.GoodsBean;
 import com.adrian.automat.pojo.GoodsDetailBean;
 import com.adrian.automat.pojo.response.GoodsDetailResp;
-import com.adrian.automat.pojo.response.GoodsListResp;
-import com.adrian.automat.pojo.response.OrderCancelResp;
 import com.adrian.automat.pojo.response.OrderCreateResp;
 import com.adrian.automat.pojo.response.OrderInfoResp;
 import com.adrian.automat.pojo.response.PayTypeResp;
@@ -20,12 +17,14 @@ import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.Constants;
 import com.adrian.automat.tools.HttpListener;
 import com.adrian.automat.tools.NetUtil;
-import com.adrian.automat.widget.NumChooserView;
 import com.adrian.automat.widget.QRCodeDialog;
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.stx.xhb.xbanner.XBanner;
 import com.yanzhenjie.nohttp.rest.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +57,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
     private int userId = -1;
     private GoodsDetailBean detailBean;
     private String payType;
+    private String orderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +176,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
             case Constants.GET_GOODS_INFO_TAG:
                 GoodsDetailResp goodsDetailResp = JSON.parseObject(respStr, GoodsDetailResp.class);
 //                CommUtil.logE("GOODSINFO", goodsDetailResp.toString());
-                if (goodsDetailResp != null) {
+                if (goodsDetailResp != null && goodsDetailResp.getCode() == 0) {
                     detailBean = goodsDetailResp.getData();
                     Glide.with(this).load(Constants.IMG_DOMAIN + "/" + detailBean.getImg()).into(mDrugImgIV);
                     mDrugNameTV.setText(detailBean.getName());
@@ -184,25 +184,47 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
                     mUnitTV.setText(detailBean.getUnit());
                     mStandardTV.setText(detailBean.getStandard());
                     mIntroTV.setText("生产商:" + detailBean.getFactory() + "\n简介:" + detailBean.getSummary());
+                } else {
+                    CommUtil.showToast(goodsDetailResp.getMsg());
                 }
                 break;
             case Constants.CREATE_ORDER_TAG:
                 OrderCreateResp orderCreateResp = JSON.parseObject(respStr, OrderCreateResp.class);
-                if (orderCreateResp != null) {
+                if (orderCreateResp != null && orderCreateResp.getCode() == 0) {
+                    orderId = orderCreateResp.getData();
 //                    util.getOrderInfo(orderCreateResp.getData());
-                    util.choosePayType(orderCreateResp.getData(), payType);
+//                    util.choosePayType(orderCreateResp.getData(), payType);
+                    util.requestTakeDelivery(orderCreateResp.getData());
+                } else {
+                    CommUtil.showToast(orderCreateResp.getMsg());
                 }
                 break;
             case Constants.CANCEL_ORDER_TAG:
-                OrderCancelResp orderCancelResp = JSON.parseObject(respStr, OrderCancelResp.class);
-                if (orderCancelResp != null) {
-                    CommUtil.showToast(orderCancelResp.isData() ? "成功取消订单!" : "取消订单失败!");
+                try {
+                    JSONObject json = new JSONObject(respStr);
+                    if (json.optInt("code") == 0 && json.optBoolean("data")) {
+                        orderId = null;
+                        CommUtil.showToast("订单已取消!");
+                    } else {
+                        CommUtil.showToast(json.optString("msg"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+//                OrderCancelResp orderCancelResp = JSON.parseObject(respStr, OrderCancelResp.class);
+//                if (orderCancelResp != null && orderCancelResp.isData()) {
+//                    orderId = null;
+//                    CommUtil.showToast("成功取消订单!");
+//                } else {
+//                    CommUtil.showToast("取消订单失败!");
+//                }
                 break;
             case Constants.GET_ORDER_INFO_TAG:
                 OrderInfoResp orderInfoResp = JSON.parseObject(respStr, OrderInfoResp.class);
-                if (orderInfoResp != null && orderInfoResp.getData() != null) {
+                if (orderInfoResp != null && orderInfoResp.getCode() == 0) {
                     util.cancelOrder(orderInfoResp.getData().getOrderId());
+                } else {
+                    CommUtil.showToast(orderInfoResp.getMsg());
                 }
                 break;
             case Constants.CHOOSE_PAY_TYPE_TAG:
@@ -210,6 +232,43 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
                 if (payTypeResp != null) {
                     String qrCodeUrl = payTypeResp.getData();
                 }
+                break;
+            case Constants.REQUEST_TAKE_DELIVERY_TAG:
+                try {
+                    JSONObject json = new JSONObject(respStr);
+                    if (json.optInt("code") == 0 && json.optBoolean("data")) {
+                        util.takeDelivery(orderId);
+                    } else {
+                        CommUtil.showToast(json.optString("msg"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+//                ReqTakeDeliveryResp reqTakeDeliveryResp = JSON.parseObject(respStr, ReqTakeDeliveryResp.class);
+//                if (reqTakeDeliveryResp != null && reqTakeDeliveryResp.getCode() == 0) {
+//                    CommUtil.logE("REQ_TAKE_DELIVERY", "请求出货");
+//                    util.takeDelivery(orderId);
+//                } else {
+//                    CommUtil.showToast(reqTakeDeliveryResp.getMsg());
+//                }
+                break;
+            case Constants.TAKE_DELIVERY_TAG:
+                try {
+                    JSONObject json = new JSONObject(respStr);
+                    if (json.optInt("code") == 0 && json.optBoolean("data")) {
+                        CommUtil.showToast("出货成功!");
+                    } else {
+                        CommUtil.showToast(json.optString("msg"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+//                TakeDeliveryResp takeDeliveryResp = JSON.parseObject(respStr, TakeDeliveryResp.class);
+//                if (takeDeliveryResp != null && takeDeliveryResp.isData()) {
+//                    CommUtil.showToast("出货成功!");
+//                } else {
+//                    CommUtil.showToast(takeDeliveryResp.getMsg());
+//                }
                 break;
         }
     }

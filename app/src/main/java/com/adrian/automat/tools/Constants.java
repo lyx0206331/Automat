@@ -10,6 +10,24 @@ public class Constants {
     public static final String TEST_PWD = "123456";
     public static final String MAP_KEY = "854821c29d97efc5cebe44464b3d1d72";
 
+    //Ali sandbox
+//    沙箱环境账号
+//    买家账号    vuthgf6615@sandbox.com
+//    登录密码    111111
+//    支付密码    111111
+//    用户名称     沙箱环境
+//    证件类型    身份证(IDENTITY_CARD)
+//    证件号码    265040198709063456
+//
+//    沙箱环境支付宝下载地址
+//    https://sandbox.alipaydev.com/user/downloadApp.htm
+    public static final String buyer_acount = "vuthgf6615@sandbox.com";
+    public static final String login_pwd = "111111";
+    public static final String pay_pwd = "111111";
+    public static final String usr_name = "沙箱环境";
+    public static final String id_type = "身份证(IDENTITY_CARD)";
+    public static final String id_number = "265040198709063456";
+
     public static final int LOGIN_TAG = 0;
     public static final int GOODS_LIST_TAG = 1;
     public static final int GOODS_TYPE_LIST_TAG = 2;

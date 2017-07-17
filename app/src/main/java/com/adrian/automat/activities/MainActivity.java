@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
@@ -21,7 +21,6 @@ import com.adrian.automat.activities.fragments.QrCodeFragment;
 import com.adrian.automat.activities.fragments.ShoppingFragment;
 import com.adrian.automat.application.MyApplication;
 import com.adrian.automat.pojo.response.GoodsListResp;
-import com.adrian.automat.pojo.response.ReportInfoResp;
 import com.adrian.automat.receiver.JPushUtil;
 import com.adrian.automat.receiver.LocalBroadcastManager;
 import com.adrian.automat.tools.CommUtil;
@@ -31,6 +30,9 @@ import com.adrian.automat.tools.NetUtil;
 import com.adrian.automat.widget.MngrLoginDialog;
 import com.alibaba.fastjson.JSON;
 import com.yanzhenjie.nohttp.rest.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -196,10 +198,20 @@ public class MainActivity extends BaseFragmentActivity implements RadioGroup.OnC
                 MyApplication.getInstance().setAllGoodsList(resp.getData());
                 break;
             case Constants.MACHINE_REPORT_TAG:
-                ReportInfoResp reportInfoResp = JSON.parseObject(respStr, ReportInfoResp.class);
-                if (!reportInfoResp.isData()) {
-                    CommUtil.showToast("设备信息上报失败。" + reportInfoResp.getMsg());
+                try {
+                    JSONObject json = new JSONObject(respStr);
+                    if (json.optInt("code") == 0 && json.optBoolean("data")) {
+                        CommUtil.logE("REPORT", "上报信息！");
+                    } else {
+                        CommUtil.showToast(json.optString("msg"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+//                ReportInfoResp reportInfoResp = JSON.parseObject(respStr, ReportInfoResp.class);
+//                if (!reportInfoResp.isData()) {
+//                    CommUtil.showToast("设备信息上报失败。" + reportInfoResp.getMsg());
+//                }
                 break;
         }
     }

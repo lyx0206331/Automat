@@ -3,7 +3,6 @@ package com.adrian.automat.activities;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.DataBindingUtil;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
@@ -11,8 +10,6 @@ import com.adrian.automat.BR;
 import com.adrian.automat.R;
 import com.adrian.automat.databinding.ActivitySensorReportBinding;
 import com.adrian.automat.pojo.response.MachineInfoResp;
-import com.adrian.automat.pojo.response.ModifyPathwayResp;
-import com.adrian.automat.pojo.response.ReportInfoResp;
 import com.adrian.automat.tools.CommUtil;
 import com.adrian.automat.tools.Constants;
 import com.adrian.automat.tools.HttpListener;
@@ -20,8 +17,8 @@ import com.adrian.automat.tools.NetUtil;
 import com.alibaba.fastjson.JSON;
 import com.yanzhenjie.nohttp.rest.Response;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SensorReportActivity extends BaseActivity implements HttpListener {
 
@@ -68,13 +65,23 @@ public class SensorReportActivity extends BaseActivity implements HttpListener {
                 report.setMachineInfo(resp.toString());
                 break;
             case Constants.MACHINE_REPORT_TAG:
-                ReportInfoResp resp1 = JSON.parseObject(respStr, ReportInfoResp.class);
-                if (resp1.isData()) {
-                    CommUtil.showToast("已上报机器状态!");
-                    finish();
-                } else {
-                    CommUtil.showToast("机器状态上报失败:" + resp1.getMsg());
+                try {
+                    JSONObject json = new JSONObject(respStr);
+                    if (json.optInt("code") == 0 && json.optBoolean("data")) {
+                        CommUtil.showToast("已上报机器状态!");
+                    } else {
+                        CommUtil.showToast(json.optString("msg"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+//                ReportInfoResp resp1 = JSON.parseObject(respStr, ReportInfoResp.class);
+//                if (resp1.isData()) {
+//                    CommUtil.showToast("已上报机器状态!");
+//                    finish();
+//                } else {
+//                    CommUtil.showToast("机器状态上报失败:" + resp1.getMsg());
+//                }
                 break;
         }
     }

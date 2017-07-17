@@ -223,6 +223,9 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
                 GoodsTypesResp resp = JSON.parseObject(respStr, GoodsTypesResp.class);
 //                CommUtil.logE(TAG, resp.toString());
                 List<GoodsTypeBean> types = resp.getData().getList();
+                if (types == null || types.size() == 0) {
+                    return;
+                }
                 for (final GoodsTypeBean type : types) {
                     RadioButton rb = new RadioButton(this);
                     rb.setButtonDrawable(null);
@@ -252,6 +255,7 @@ public class AllDrugActivity extends BaseActivity implements HttpListener {
             case Constants.GOODS_LIST_TAG:
                 GoodsListResp goodsListResp = JSON.parseObject(respStr, GoodsListResp.class);
 //                CommUtil.logE("GOODS_COUNT", "goods count = " + goodsListResp.getData().size());
+                CommUtil.logE(TAG, respStr);
                 if (cutType == -1) {
                     MyApplication.getInstance().setAllGoodsList(goodsListResp.getData());
                 }
