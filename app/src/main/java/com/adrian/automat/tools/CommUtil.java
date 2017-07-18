@@ -3,7 +3,8 @@ package com.adrian.automat.tools;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.ActivityManager.*;
+import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.DownloadManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -127,6 +128,7 @@ public class CommUtil {
 
     /**
      * 判断是否静态IP
+     *
      * @param context
      * @return
      */
