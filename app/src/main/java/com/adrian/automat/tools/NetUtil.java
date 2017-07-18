@@ -205,9 +205,8 @@ public class NetUtil {
      *
      * @param userId
      * @param gridId
-     * @param goodsId
      */
-    public void createOrder(int userId, @NonNull int gridId, @NonNull int goodsId) {
+    public void createOrder(int userId, @NonNull int gridId) {
         if (CommUtil.getNetworkStatus(MyApplication.getInstance()) == -1) {
             CommUtil.showToast(R.string.error_please_check_network);
             return;
@@ -218,7 +217,6 @@ public class NetUtil {
             req.add("userId", userId);
         }
         req.add("gridId", gridId);
-        req.add("goodsId", goodsId);
         request(Constants.CREATE_ORDER_TAG, req, jsonHttpListener, false, true);
     }
 

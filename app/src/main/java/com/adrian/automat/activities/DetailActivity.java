@@ -164,7 +164,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
     private void createOrder(String payType) {
         if (detailBean != null) {
             this.payType = payType;
-            util.createOrder(userId, gridId, detailBean.getGoodsId());
+            util.createOrder(userId, gridId);
         }
     }
 
